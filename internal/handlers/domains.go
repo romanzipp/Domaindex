@@ -35,6 +35,7 @@ type DomainsListData struct {
 	Dir             string
 	Registrars      []models.Registrar
 	DefaultCurrency string
+	TotalYearlyCost float64
 }
 
 func (h *DomainsHandler) List(w http.ResponseWriter, r *http.Request) {
@@ -97,6 +98,13 @@ func (h *DomainsHandler) List(w http.ResponseWriter, r *http.Request) {
 		rows[i] = row
 	}
 
+	var total float64
+	for i := range rows {
+		if rows[i].YearlyCost != nil {
+			total += *rows[i].YearlyCost
+		}
+	}
+
 	var registrars []models.Registrar
 	h.db.Where("user_id = ?", user.ID).Find(&registrars)
 
@@ -106,6 +114,7 @@ func (h *DomainsHandler) List(w http.ResponseWriter, r *http.Request) {
 		Dir:             dir,
 		Registrars:      registrars,
 		DefaultCurrency: targetCurrency,
+		TotalYearlyCost: total,
 	})
 }
 
