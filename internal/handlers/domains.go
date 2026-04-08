@@ -90,7 +90,10 @@ func (h *DomainsHandler) ShowAdd(w http.ResponseWriter, r *http.Request) {
 	user := middleware.UserFromContext(r.Context())
 	var registrars []models.Registrar
 	h.db.Where("user_id = ?", user.ID).Find(&registrars)
-	h.render(w, r, "domains/add.html", map[string]any{"Registrars": registrars})
+	h.render(w, r, "domains/add.html", map[string]any{
+		"Registrars": registrars,
+		"Next":       "/domains/add",
+	}, "registrars/_form.html")
 }
 
 func (h *DomainsHandler) Add(w http.ResponseWriter, r *http.Request) {
@@ -115,7 +118,10 @@ func (h *DomainsHandler) ShowBulk(w http.ResponseWriter, r *http.Request) {
 	user := middleware.UserFromContext(r.Context())
 	var registrars []models.Registrar
 	h.db.Where("user_id = ?", user.ID).Find(&registrars)
-	h.render(w, r, "domains/bulk.html", map[string]any{"Registrars": registrars})
+	h.render(w, r, "domains/bulk.html", map[string]any{
+		"Registrars": registrars,
+		"Next":       "/domains/bulk",
+	}, "registrars/_form.html")
 }
 
 func (h *DomainsHandler) Bulk(w http.ResponseWriter, r *http.Request) {
@@ -132,8 +138,13 @@ func (h *DomainsHandler) Bulk(w http.ResponseWriter, r *http.Request) {
 	var errs []string
 
 	for _, line := range lines {
-		name := strings.ToLower(strings.TrimSpace(line))
+		name := strings.ToLower(strings.ReplaceAll(strings.TrimSpace(line), " ", ""))
 		if name == "" {
+			continue
+		}
+		var existing models.Domain
+		if h.db.Where("user_id = ? AND name = ?", user.ID, name).First(&existing).Error == nil {
+			errs = append(errs, name+": already exists")
 			continue
 		}
 		domain := h.buildDomain(r, user.ID, name)
@@ -141,7 +152,7 @@ func (h *DomainsHandler) Bulk(w http.ResponseWriter, r *http.Request) {
 			errs = append(errs, name+": WHOIS fetch failed ("+err.Error()+")")
 		}
 		if err := h.db.Create(domain).Error; err != nil {
-			errs = append(errs, name+": could not save (already exists?)")
+			errs = append(errs, name+": could not save")
 			continue
 		}
 		added++
@@ -295,10 +306,17 @@ func (h *DomainsHandler) buildDomain(r *http.Request, userID uint, name string) 
 }
 
 func (h *DomainsHandler) fetchAndSaveDomain(w http.ResponseWriter, r *http.Request, domain *models.Domain, errRedirect string) {
+	var existing models.Domain
+	if h.db.Where("user_id = ? AND name = ?", domain.UserID, domain.Name).First(&existing).Error == nil {
+		h.flashError(w, r, fmt.Sprintf("%s already exists", domain.Name))
+		http.Redirect(w, r, errRedirect, http.StatusSeeOther)
+		return
+	}
+
 	h.whois.UpdateDomain(domain) // best-effort, don't fail on whois error
 
 	if err := h.db.Create(domain).Error; err != nil {
-		h.flashError(w, r, "Domain already exists or could not be saved")
+		h.flashError(w, r, fmt.Sprintf("Could not save %s", domain.Name))
 		http.Redirect(w, r, errRedirect, http.StatusSeeOther)
 		return
 	}

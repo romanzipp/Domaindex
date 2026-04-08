@@ -29,13 +29,12 @@ type PageData struct {
 	FlashError   []string
 }
 
-func (b *Base) render(w http.ResponseWriter, r *http.Request, page string, data any) {
-	tmpl, err := template.New("").Funcs(templateFuncs()).ParseFS(
-		b.templateFS,
-		"layout/base.html",
-		"layout/nav.html",
-		"pages/"+page,
-	)
+func (b *Base) render(w http.ResponseWriter, r *http.Request, page string, data any, partials ...string) {
+	files := []string{"layout/base.html", "layout/nav.html", "pages/" + page}
+	for _, p := range partials {
+		files = append(files, "pages/"+p)
+	}
+	tmpl, err := template.New("").Funcs(templateFuncs()).ParseFS(b.templateFS, files...)
 	if err != nil {
 		http.Error(w, "template error: "+err.Error(), http.StatusInternalServerError)
 		return

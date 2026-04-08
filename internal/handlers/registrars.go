@@ -56,11 +56,19 @@ func (h *RegistrarsHandler) Add(w http.ResponseWriter, r *http.Request) {
 
 	if err := h.db.Create(&registrar).Error; err != nil {
 		h.flashError(w, r, "Failed to create registrar")
-		http.Redirect(w, r, "/registrars/add", http.StatusSeeOther)
+		errRedirect := "/registrars/add"
+		if next := r.FormValue("next"); next != "" {
+			errRedirect = next
+		}
+		http.Redirect(w, r, errRedirect, http.StatusSeeOther)
 		return
 	}
 
 	h.flashSuccess(w, r, "Registrar added")
+	if next := r.FormValue("next"); next != "" {
+		http.Redirect(w, r, next, http.StatusSeeOther)
+		return
+	}
 	http.Redirect(w, r, "/registrars/"+idStr(registrar.ID), http.StatusSeeOther)
 }
 

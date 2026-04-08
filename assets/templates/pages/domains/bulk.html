@@ -27,7 +27,7 @@
 
         <div class="flex gap-6">
             <label class="flex items-center gap-2 text-sm">
-                <input type="checkbox" name="auto_renewed" class="rounded">
+                <input type="checkbox" name="auto_renewed" checked class="rounded">
                 Auto-renewed
             </label>
             <label class="flex items-center gap-2 text-sm">
@@ -44,5 +44,7 @@
             <a href="/domains" class="border border-gray-300 text-sm px-4 py-2 rounded hover:bg-gray-100">Cancel</a>
         </div>
     </form>
+
+    {{template "registrars/_form.html" .Data}}
 </div>
 {{end}}
