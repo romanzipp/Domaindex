@@ -36,6 +36,12 @@ func templateFuncs() template.FuncMap {
 			return " ↓"
 		},
 		"add": func(a, b int) int { return a + b },
+		"deref": func(p *uint) uint {
+			if p == nil {
+				return 0
+			}
+			return *p
+		},
 		"daysUntil": func(t *time.Time) string {
 			if t == nil {
 				return "—"
