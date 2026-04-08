@@ -1,0 +1,89 @@
+package services
+
+import (
+	"encoding/json"
+	"strings"
+	"time"
+
+	"github.com/likexian/whois"
+	whoisparser "github.com/likexian/whois-parser"
+	"github.com/romanzipp/domain-manager/internal/models"
+	"gorm.io/gorm"
+)
+
+type WhoisService struct {
+	db *gorm.DB
+}
+
+func NewWhoisService(db *gorm.DB) *WhoisService {
+	return &WhoisService{db: db}
+}
+
+type WhoisResult struct {
+	Raw            string
+	CreatedDate    *time.Time
+	UpdatedDate    *time.Time
+	ExpirationDate *time.Time
+	RegistrarName  string
+	NameServers    []string
+	Statuses       []string
+	DNSSec         bool
+}
+
+func (s *WhoisService) Fetch(domainName string) (*WhoisResult, error) {
+	raw, err := whois.Whois(domainName)
+	if err != nil {
+		return nil, err
+	}
+
+	result := &WhoisResult{Raw: raw}
+
+	parsed, err := whoisparser.Parse(raw)
+	if err == nil && parsed.Domain != nil {
+		result.CreatedDate = parsed.Domain.CreatedDateInTime
+		result.UpdatedDate = parsed.Domain.UpdatedDateInTime
+		result.ExpirationDate = parsed.Domain.ExpirationDateInTime
+		result.NameServers = parsed.Domain.NameServers
+		result.Statuses = parsed.Domain.Status
+		result.DNSSec = parsed.Domain.DNSSec
+	}
+
+	if parsed.Registrar != nil {
+		result.RegistrarName = parsed.Registrar.Name
+	}
+
+	return result, nil
+}
+
+func (s *WhoisService) UpdateDomain(domain *models.Domain) (changed bool, err error) {
+	result, err := s.Fetch(domain.Name)
+	if err != nil {
+		return false, err
+	}
+
+	changed = domain.WhoisRaw != "" && domain.WhoisRaw != result.Raw
+
+	nsJSON, _ := json.Marshal(result.NameServers)
+	statusJSON, _ := json.Marshal(result.Statuses)
+
+	now := time.Now()
+	domain.WhoisRaw = result.Raw
+	domain.WhoisFetchedAt = &now
+	domain.CreatedDate = result.CreatedDate
+	domain.UpdatedDate = result.UpdatedDate
+	domain.ExpirationDate = result.ExpirationDate
+	domain.RegistrarName = result.RegistrarName
+	domain.NameServersRaw = string(nsJSON)
+	domain.DomainStatus = string(statusJSON)
+	domain.DNSSec = result.DNSSec
+
+	return changed, nil
+}
+
+func ExtractTLD(domainName string) string {
+	parts := strings.Split(domainName, ".")
+	if len(parts) < 2 {
+		return domainName
+	}
+	return strings.Join(parts[1:], ".")
+}
