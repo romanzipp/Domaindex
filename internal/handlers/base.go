@@ -32,9 +32,9 @@ type PageData struct {
 func (b *Base) render(w http.ResponseWriter, r *http.Request, page string, data any) {
 	tmpl, err := template.New("").Funcs(templateFuncs()).ParseFS(
 		b.templateFS,
-		"templates/layout/base.html",
-		"templates/layout/nav.html",
-		"templates/pages/"+page,
+		"layout/base.html",
+		"layout/nav.html",
+		"pages/"+page,
 	)
 	if err != nil {
 		http.Error(w, "template error: "+err.Error(), http.StatusInternalServerError)

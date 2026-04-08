@@ -1,0 +1,26 @@
+{{define "base.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{block "title" .}}Domain Manager{{end}}</title>
+    <link rel="stylesheet" href="/static/css/tailwind.css">
+    <link rel="icon" href="/static/favicon.ico">
+</head>
+<body class="bg-gray-50 text-gray-900 min-h-screen">
+    {{if .User}}
+    {{template "nav.html" .}}
+    {{end}}
+    <main class="max-w-7xl mx-auto px-4 py-6">
+        {{range .FlashSuccess}}
+        <div class="bg-green-100 border border-green-300 text-green-800 px-4 py-2 rounded mb-3 text-sm">{{.}}</div>
+        {{end}}
+        {{range .FlashError}}
+        <div class="bg-red-100 border border-red-300 text-red-800 px-4 py-2 rounded mb-3 text-sm">{{.}}</div>
+        {{end}}
+        {{block "content" .}}{{end}}
+    </main>
+</body>
+</html>
+{{end}}
