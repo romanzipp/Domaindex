@@ -43,18 +43,18 @@ func (h *DomainsHandler) List(w http.ResponseWriter, r *http.Request) {
 	}
 
 	allowedSorts := map[string]string{
-		"name":            "name",
-		"expiration_date": "expiration_date",
+		"name":            "domains.name",
+		"expiration_date": "domains.expiration_date",
 		"registrar":       "registrars.name",
-		"auto_renewed":    "auto_renewed",
-		"wishlisted":      "wishlisted",
+		"auto_renewed":    "domains.auto_renewed",
+		"wishlisted":      "domains.wishlisted",
 		"created_at":      "domains.created_at",
 	}
 
 	orderCol, ok := allowedSorts[sort]
 	if !ok {
 		sort = "name"
-		orderCol = "name"
+		orderCol = "domains.name"
 	}
 
 	var domains []models.Domain
