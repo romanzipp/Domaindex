@@ -7,9 +7,10 @@ import (
 )
 
 type Config struct {
-	AppHost  string
-	AppPort  string
-	AppSecret string
+	AppHost              string
+	AppPort              string
+	AppSecret            string
+	RegistrationEnabled  bool
 
 	DBDriver string
 	DBDSN    string
@@ -29,9 +30,10 @@ func Load() *Config {
 	}
 
 	return &Config{
-		AppHost:   getEnv("APP_HOST", "0.0.0.0"),
-		AppPort:   getEnv("APP_PORT", "8080"),
-		AppSecret: getEnv("APP_SECRET", "change-me-in-production"),
+		AppHost:             getEnv("APP_HOST", "0.0.0.0"),
+		AppPort:             getEnv("APP_PORT", "8080"),
+		AppSecret:           getEnv("APP_SECRET", "change-me-in-production"),
+		RegistrationEnabled: getEnvBool("REGISTRATION_ENABLED", true),
 
 		DBDriver: getEnv("DB_DRIVER", "sqlite"),
 		DBDSN:    getEnv("DB_DSN", "data/domain-manager.db"),

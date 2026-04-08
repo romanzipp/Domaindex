@@ -46,6 +46,10 @@ func (b *Base) Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func (b *Base) ShowRegister(w http.ResponseWriter, r *http.Request) {
+	if !b.RegistrationEnabled {
+		http.NotFound(w, r)
+		return
+	}
 	if middleware.UserFromContext(r.Context()) != nil {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
@@ -54,6 +58,10 @@ func (b *Base) ShowRegister(w http.ResponseWriter, r *http.Request) {
 }
 
 func (b *Base) Register(w http.ResponseWriter, r *http.Request) {
+	if !b.RegistrationEnabled {
+		http.NotFound(w, r)
+		return
+	}
 	if err := r.ParseForm(); err != nil {
 		http.Error(w, "bad request", http.StatusBadRequest)
 		return

@@ -12,28 +12,35 @@ import (
 )
 
 type Base struct {
-	db        *gorm.DB
-	store     *sessions.CookieStore
-	templates *template.Template
+	db                  *gorm.DB
+	store               *sessions.CookieStore
+	templateFS          fs.FS
+	RegistrationEnabled bool
 }
 
-func NewBase(db *gorm.DB, store *sessions.CookieStore, templateFS fs.FS) (*Base, error) {
-	tmpl, err := template.New("").Funcs(templateFuncs()).ParseFS(templateFS, "templates/**/*.html", "templates/*.html")
-	if err != nil {
-		return nil, err
-	}
-	return &Base{db: db, store: store, templates: tmpl}, nil
+func NewBase(db *gorm.DB, store *sessions.CookieStore, templateFS fs.FS, registrationEnabled bool) *Base {
+	return &Base{db: db, store: store, templateFS: templateFS, RegistrationEnabled: registrationEnabled}
 }
 
 type PageData struct {
-	User          *models.User
-	Data          any
-	Errors        []string
-	FlashSuccess  []string
-	FlashError    []string
+	User         *models.User
+	Data         any
+	FlashSuccess []string
+	FlashError   []string
 }
 
-func (b *Base) render(w http.ResponseWriter, r *http.Request, name string, data any) {
+func (b *Base) render(w http.ResponseWriter, r *http.Request, page string, data any) {
+	tmpl, err := template.New("").Funcs(templateFuncs()).ParseFS(
+		b.templateFS,
+		"templates/layout/base.html",
+		"templates/layout/nav.html",
+		"templates/pages/"+page,
+	)
+	if err != nil {
+		http.Error(w, "template error: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	user := middleware.UserFromContext(r.Context())
 	pd := PageData{
 		User:         user,
@@ -41,8 +48,9 @@ func (b *Base) render(w http.ResponseWriter, r *http.Request, name string, data 
 		FlashSuccess: getFlash(w, r, b.store, "success"),
 		FlashError:   getFlash(w, r, b.store, "error"),
 	}
+
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	if err := b.templates.ExecuteTemplate(w, name, pd); err != nil {
+	if err := tmpl.ExecuteTemplate(w, "base.html", pd); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
