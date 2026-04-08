@@ -39,7 +39,7 @@ func templateFuncs() template.FuncMap {
 			return " ↓"
 		},
 		"add": func(a, b int) int { return a + b },
-		"deref": func(p *uint) uint {
+		"derefUint": func(p *uint) uint {
 			if p == nil {
 				return 0
 			}

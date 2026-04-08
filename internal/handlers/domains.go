@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -128,7 +129,7 @@ func (h *DomainsHandler) Bulk(w http.ResponseWriter, r *http.Request) {
 	lines := strings.Split(raw, "\n")
 
 	added := 0
-	var errors []string
+	var errs []string
 
 	for _, line := range lines {
 		name := strings.ToLower(strings.TrimSpace(line))
@@ -136,25 +137,21 @@ func (h *DomainsHandler) Bulk(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 		domain := h.buildDomain(r, user.ID, name)
-		_, err := h.whois.UpdateDomain(domain)
-		if err != nil {
-			errors = append(errors, name+": WHOIS fetch failed")
+		if _, err := h.whois.UpdateDomain(domain); err != nil {
+			errs = append(errs, name+": WHOIS fetch failed ("+err.Error()+")")
 		}
 		if err := h.db.Create(domain).Error; err != nil {
-			errors = append(errors, name+": already exists or db error")
+			errs = append(errs, name+": could not save (already exists?)")
 			continue
 		}
 		added++
 	}
 
-	if len(errors) > 0 {
-		for _, e := range errors {
-			h.flashError(w, r, e)
-		}
+	for _, e := range errs {
+		h.flashError(w, r, e)
 	}
-	h.flashSuccess(w, r, strings.Repeat(".", 0)+strings.TrimSuffix(strings.Repeat("added, ", added), ", "))
 	if added > 0 {
-		h.flashSuccess(w, r, "Added "+strings.TrimSpace(strings.Repeat("1 ", added))+" domain(s)")
+		h.flashSuccess(w, r, fmt.Sprintf("Added %d domain(s)", added))
 	}
 	http.Redirect(w, r, "/domains", http.StatusSeeOther)
 }

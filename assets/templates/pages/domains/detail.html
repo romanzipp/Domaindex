@@ -26,7 +26,7 @@
                     class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500">
                     <option value="0"{{if not .Data.Domain.RegistrarID}} selected{{end}}>— None —</option>
                     {{range .Data.Registrars}}
-                    <option value="{{.ID}}"{{if and $.Data.Domain.RegistrarID (eq (deref $.Data.Domain.RegistrarID) .ID)}} selected{{end}}>{{.Name}}</option>
+                    <option value="{{.ID}}"{{if and $.Data.Domain.RegistrarID (eq (derefUint $.Data.Domain.RegistrarID) .ID)}} selected{{end}}>{{.Name}}</option>
                     {{end}}
                 </select>
             </div>
