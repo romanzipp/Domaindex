@@ -56,7 +56,7 @@
             </td>
             <td class="py-2 pr-4">
                 {{if .Domain.ExpirationDate}}
-                    {{$days := .Domain.DaysUntilExpiry}}
+                    {{$days := daysInt .Domain.ExpirationDate}}
                     <span class="{{if lt $days 8}}text-red-600 font-medium{{else if lt $days 31}}text-yellow-600{{else}}text-gray-700{{end}}">
                         {{formatDate .Domain.ExpirationDate}}
                         <span class="text-xs text-gray-400">({{daysUntil .Domain.ExpirationDate}})</span>

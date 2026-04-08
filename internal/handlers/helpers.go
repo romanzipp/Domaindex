@@ -55,5 +55,11 @@ func templateFuncs() template.FuncMap {
 			}
 			return fmt.Sprintf("%dd", days)
 		},
+		"daysInt": func(t *time.Time) int {
+			if t == nil {
+				return 9999
+			}
+			return int(time.Until(*t).Hours() / 24)
+		},
 	}
 }
