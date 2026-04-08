@@ -47,6 +47,7 @@ func (h *RegistrarsHandler) Add(w http.ResponseWriter, r *http.Request) {
 		UserID:   user.ID,
 		Name:     name,
 		URL:      r.FormValue("url"),
+		IanaID:   strings.TrimSpace(r.FormValue("iana_id")),
 		Notes:    r.FormValue("notes"),
 		Currency: r.FormValue("currency"),
 	}
@@ -97,6 +98,7 @@ func (h *RegistrarsHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 	reg.Name = strings.TrimSpace(r.FormValue("name"))
 	reg.URL = r.FormValue("url")
+	reg.IanaID = strings.TrimSpace(r.FormValue("iana_id"))
 	reg.Notes = r.FormValue("notes")
 	reg.Currency = r.FormValue("currency")
 

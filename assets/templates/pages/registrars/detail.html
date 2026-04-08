@@ -23,10 +23,17 @@
                 <input type="text" name="name" value="{{.Data.Registrar.Name}}" required
                     class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500">
             </div>
-            <div>
-                <label class="block text-sm font-medium mb-1">URL</label>
-                <input type="url" name="url" value="{{.Data.Registrar.URL}}"
-                    class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500">
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-sm font-medium mb-1">URL</label>
+                    <input type="url" name="url" value="{{.Data.Registrar.URL}}"
+                        class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">IANA ID</label>
+                    <input type="text" name="iana_id" value="{{.Data.Registrar.IanaID}}" placeholder="1234"
+                        class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500">
+                </div>
             </div>
             <div>
                 <label class="block text-sm font-medium mb-1">Currency</label>
