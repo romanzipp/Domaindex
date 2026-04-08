@@ -23,10 +23,11 @@ func NewBase(db *gorm.DB, store *sessions.CookieStore, templateFS fs.FS, registr
 }
 
 type PageData struct {
-	User         *models.User
-	Data         any
-	FlashSuccess []string
-	FlashError   []string
+	User              *models.User
+	Data              any
+	FlashSuccess      []string
+	FlashError        []string
+	UnreadCount       int64
 }
 
 func (b *Base) render(w http.ResponseWriter, r *http.Request, page string, data any, partials ...string) {
@@ -46,12 +47,24 @@ func (b *Base) render(w http.ResponseWriter, r *http.Request, page string, data 
 		Data:         data,
 		FlashSuccess: getFlash(w, r, b.store, "success"),
 		FlashError:   getFlash(w, r, b.store, "error"),
+		UnreadCount:  b.unreadCount(user),
 	}
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if err := tmpl.ExecuteTemplate(w, "base.html", pd); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+}
+
+func (b *Base) unreadCount(user *models.User) int64 {
+	if user == nil {
+		return 0
+	}
+	var count int64
+	b.db.Model(&models.Notification{}).
+		Where("user_id = ? AND read_at IS NULL", user.ID).
+		Count(&count)
+	return count
 }
 
 func (b *Base) flashSuccess(w http.ResponseWriter, r *http.Request, msg string) {
