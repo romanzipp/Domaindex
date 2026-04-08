@@ -166,7 +166,7 @@ func (h *DomainsHandler) Bulk(w http.ResponseWriter, r *http.Request) {
 		}
 		domain := h.buildDomain(r, user.ID, name)
 		_, whoisResult, _ := h.whois.UpdateDomain(domain)
-		if r.FormValue("auto_create_registrar") == "on" && domain.RegistrarID == nil && whoisResult != nil {
+		if r.FormValue("registrar_id") == "whois" && whoisResult != nil {
 			domain.RegistrarID = h.registrarFromWhois(whoisResult, user.ID)
 		}
 		if err := h.db.Create(domain).Error; err != nil {
@@ -337,7 +337,8 @@ func (h *DomainsHandler) resolveRegistrarID(r *http.Request, userID uint) *uint 
 		}
 		return nil
 	}
-	if regID := r.FormValue("registrar_id"); regID != "" && regID != "0" {
+	// "whois" is a special sentinel — registrar will be resolved after WHOIS fetch
+	if regID := r.FormValue("registrar_id"); regID != "" && regID != "0" && regID != "whois" {
 		var reg models.Registrar
 		if h.db.Where("id = ? AND user_id = ?", regID, userID).First(&reg).Error == nil {
 			return &reg.ID
@@ -380,7 +381,7 @@ func (h *DomainsHandler) fetchAndSaveDomain(w http.ResponseWriter, r *http.Reque
 	}
 
 	_, whoisResult, _ := h.whois.UpdateDomain(domain) // best-effort
-	if r.FormValue("auto_create_registrar") == "on" && domain.RegistrarID == nil && whoisResult != nil {
+	if r.FormValue("registrar_id") == "whois" && whoisResult != nil {
 		domain.RegistrarID = h.registrarFromWhois(whoisResult, domain.UserID)
 	}
 
