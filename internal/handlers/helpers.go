@@ -15,6 +15,9 @@ func templateFuncs() template.FuncMap {
 			}
 			return t.Format("2006-01-02")
 		},
+		"formatDate2": func(t time.Time) string {
+			return t.Format("2006-01-02 15:04")
+		},
 		"sortLink": func(currentSort, currentDir, col, baseURL string) string {
 			dir := "asc"
 			if currentSort == col && currentDir == "asc" {
