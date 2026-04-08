@@ -20,14 +20,16 @@ func NewWhoisService(db *gorm.DB) *WhoisService {
 }
 
 type WhoisResult struct {
-	Raw            string
-	CreatedDate    *time.Time
-	UpdatedDate    *time.Time
-	ExpirationDate *time.Time
-	RegistrarName  string
-	NameServers    []string
-	Statuses       []string
-	DNSSec         bool
+	Raw              string
+	CreatedDate      *time.Time
+	UpdatedDate      *time.Time
+	ExpirationDate   *time.Time
+	RegistrarName    string
+	RegistrarIanaID  string
+	RegistrarURL     string
+	NameServers      []string
+	Statuses         []string
+	DNSSec           bool
 }
 
 func (s *WhoisService) Fetch(domainName string) (*WhoisResult, error) {
@@ -50,15 +52,17 @@ func (s *WhoisService) Fetch(domainName string) (*WhoisResult, error) {
 
 	if parsed.Registrar != nil {
 		result.RegistrarName = parsed.Registrar.Name
+		result.RegistrarIanaID = parsed.Registrar.ID
+		result.RegistrarURL = parsed.Registrar.ReferralURL
 	}
 
 	return result, nil
 }
 
-func (s *WhoisService) UpdateDomain(domain *models.Domain) (changed bool, err error) {
-	result, err := s.Fetch(domain.Name)
+func (s *WhoisService) UpdateDomain(domain *models.Domain) (changed bool, result *WhoisResult, err error) {
+	result, err = s.Fetch(domain.Name)
 	if err != nil {
-		return false, err
+		return false, nil, err
 	}
 
 	changed = domain.WhoisRaw != "" && domain.WhoisRaw != result.Raw
@@ -77,7 +81,7 @@ func (s *WhoisService) UpdateDomain(domain *models.Domain) (changed bool, err er
 	domain.DomainStatus = string(statusJSON)
 	domain.DNSSec = result.DNSSec
 
-	return changed, nil
+	return changed, result, nil
 }
 
 func ExtractTLD(domainName string) string {

@@ -56,7 +56,7 @@ func (w *Worker) refreshWhois() error {
 
 	for i := range domains {
 		d := &domains[i]
-		changed, err := w.whois.UpdateDomain(d)
+		changed, _, err := w.whois.UpdateDomain(d)
 		if err != nil {
 			log.Printf("whois fetch failed for %s: %v", d.Name, err)
 			continue

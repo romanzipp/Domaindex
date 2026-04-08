@@ -6,7 +6,9 @@
                 <a href="/" class="font-semibold text-gray-900">Domain Manager</a>
                 <a href="/domains" class="text-sm text-gray-600 hover:text-gray-900">Domains</a>
                 <a href="/registrars" class="text-sm text-gray-600 hover:text-gray-900">Registrars</a>
-                <a href="/notifications" class="text-sm text-gray-600 hover:text-gray-900">Notifications</a>
+                <a href="/notifications" class="text-sm text-gray-600 hover:text-gray-900">
+                    Notifications{{if .UnreadCount}} <span class="inline-block bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 leading-none ml-0.5">{{.UnreadCount}}</span>{{end}}
+                </a>
             </div>
             <div class="flex items-center gap-4">
                 <a href="/profile" class="text-sm text-gray-500 hover:text-gray-900">{{.User.Username}}</a>

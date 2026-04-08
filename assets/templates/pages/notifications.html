@@ -17,9 +17,16 @@
     </thead>
     <tbody class="divide-y divide-gray-100">
         {{range .Data}}
+        {{if .ReadAt}}
         <tr class="hover:bg-gray-50">
+        {{else}}
+        <tr class="bg-yellow-50 hover:bg-yellow-100">
+        {{end}}
             <td class="py-2 pr-4">
-                <a href="/domains/{{.DomainID}}" class="text-gray-900 hover:underline">{{.Domain.Name}}</a>
+                <div class="flex items-center gap-1.5">
+                    {{if not .ReadAt}}<span class="inline-block w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>{{end}}
+                    <a href="/domains/{{.DomainID}}" class="text-gray-900 hover:underline">{{.Domain.Name}}</a>
+                </div>
             </td>
             <td class="py-2 pr-4">
                 <span class="text-xs bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded font-mono">{{.Type}}</span>

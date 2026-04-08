@@ -13,24 +13,28 @@ import (
 
 type DomainsHandler struct {
 	*Base
-	whois *services.WhoisService
-	price *services.PriceService
+	whois    *services.WhoisService
+	price    *services.PriceService
+	currency *services.CurrencyService
 }
 
-func NewDomainsHandler(base *Base, whois *services.WhoisService, price *services.PriceService) *DomainsHandler {
-	return &DomainsHandler{Base: base, whois: whois, price: price}
+func NewDomainsHandler(base *Base, whois *services.WhoisService, price *services.PriceService, currency *services.CurrencyService) *DomainsHandler {
+	return &DomainsHandler{Base: base, whois: whois, price: price, currency: currency}
 }
 
 type DomainRow struct {
-	Domain *models.Domain
-	Price  *models.Price
+	Domain          *models.Domain
+	Price           *models.Price
+	YearlyCost      *float64
+	PriceCurrency   string
 }
 
 type DomainsListData struct {
-	Rows      []DomainRow
-	Sort      string
-	Dir       string
-	Registrars []models.Registrar
+	Rows            []DomainRow
+	Sort            string
+	Dir             string
+	Registrars      []models.Registrar
+	DefaultCurrency string
 }
 
 func (h *DomainsHandler) List(w http.ResponseWriter, r *http.Request) {
@@ -67,22 +71,41 @@ func (h *DomainsHandler) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	targetCurrency := user.DefaultCurrency
+	if targetCurrency == "" {
+		targetCurrency = "USD"
+	}
+
 	rows := make([]DomainRow, len(domains))
 	for i := range domains {
-		rows[i] = DomainRow{
-			Domain: &domains[i],
-			Price:  h.price.ComputedPrice(&domains[i]),
+		d := &domains[i]
+		price := h.price.ComputedPrice(d)
+
+		row := DomainRow{Domain: d, Price: price}
+
+		if price != nil {
+			yearly := price.RenewPerYear + price.PrivacyPerYear + price.MiscPerYear
+			sourceCurrency := targetCurrency
+			if d.Registrar != nil && d.Registrar.Currency != "" {
+				sourceCurrency = d.Registrar.Currency
+			}
+			converted := h.currency.Convert(yearly, sourceCurrency, targetCurrency)
+			row.YearlyCost = &converted
+			row.PriceCurrency = targetCurrency
 		}
+
+		rows[i] = row
 	}
 
 	var registrars []models.Registrar
 	h.db.Where("user_id = ?", user.ID).Find(&registrars)
 
 	h.render(w, r, "domains/list.html", DomainsListData{
-		Rows:       rows,
-		Sort:       sort,
-		Dir:        dir,
-		Registrars: registrars,
+		Rows:            rows,
+		Sort:            sort,
+		Dir:             dir,
+		Registrars:      registrars,
+		DefaultCurrency: targetCurrency,
 	})
 }
 
@@ -142,8 +165,9 @@ func (h *DomainsHandler) Bulk(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 		domain := h.buildDomain(r, user.ID, name)
-		if _, err := h.whois.UpdateDomain(domain); err != nil {
-			errs = append(errs, name+": WHOIS fetch failed ("+err.Error()+")")
+		_, whoisResult, _ := h.whois.UpdateDomain(domain)
+		if r.FormValue("auto_create_registrar") == "on" && domain.RegistrarID == nil && whoisResult != nil {
+			domain.RegistrarID = h.registrarFromWhois(whoisResult, user.ID)
 		}
 		if err := h.db.Create(domain).Error; err != nil {
 			errs = append(errs, name+": could not save")
@@ -216,7 +240,7 @@ func (h *DomainsHandler) RefreshWhois(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if _, err := h.whois.UpdateDomain(domain); err != nil {
+	if _, _, err := h.whois.UpdateDomain(domain); err != nil {
 		h.flashError(w, r, "WHOIS fetch failed: "+err.Error())
 	} else {
 		h.db.Save(domain)
@@ -322,6 +346,31 @@ func (h *DomainsHandler) resolveRegistrarID(r *http.Request, userID uint) *uint 
 	return nil
 }
 
+// registrarFromWhois finds or creates a registrar using WHOIS data.
+// Looks up by IANA ID first (globally unique); falls back to name if no IANA ID.
+func (h *DomainsHandler) registrarFromWhois(result *services.WhoisResult, userID uint) *uint {
+	if result.RegistrarName == "" {
+		return nil
+	}
+	var reg models.Registrar
+	if result.RegistrarIanaID != "" {
+		if h.db.Where("user_id = ? AND iana_id = ?", userID, result.RegistrarIanaID).First(&reg).Error == nil {
+			return &reg.ID
+		}
+	}
+	reg = models.Registrar{
+		UserID:  userID,
+		Name:    result.RegistrarName,
+		IanaID:  result.RegistrarIanaID,
+		URL:     result.RegistrarURL,
+		Currency: "USD",
+	}
+	if h.db.Create(&reg).Error != nil {
+		return nil
+	}
+	return &reg.ID
+}
+
 func (h *DomainsHandler) fetchAndSaveDomain(w http.ResponseWriter, r *http.Request, domain *models.Domain, errRedirect string) {
 	var existing models.Domain
 	if h.db.Where("user_id = ? AND name = ?", domain.UserID, domain.Name).First(&existing).Error == nil {
@@ -330,7 +379,10 @@ func (h *DomainsHandler) fetchAndSaveDomain(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	h.whois.UpdateDomain(domain) // best-effort, don't fail on whois error
+	_, whoisResult, _ := h.whois.UpdateDomain(domain) // best-effort
+	if r.FormValue("auto_create_registrar") == "on" && domain.RegistrarID == nil && whoisResult != nil {
+		domain.RegistrarID = h.registrarFromWhois(whoisResult, domain.UserID)
+	}
 
 	if err := h.db.Create(domain).Error; err != nil {
 		h.flashError(w, r, fmt.Sprintf("Could not save %s", domain.Name))

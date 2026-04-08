@@ -5,6 +5,8 @@ import (
 	"html/template"
 	"strings"
 	"time"
+
+	"github.com/romanzipp/domain-manager/internal/services"
 )
 
 func templateFuncs() template.FuncMap {
@@ -38,8 +40,16 @@ func templateFuncs() template.FuncMap {
 			}
 			return " ↓"
 		},
-		"add": func(a, b int) int { return a + b },
+		"currencySymbol": services.Symbol,
+		"formatAmount":   services.FormatAmount,
+		"add":            func(a, b int) int { return a + b },
 		"derefUint": func(p *uint) uint {
+			if p == nil {
+				return 0
+			}
+			return *p
+		},
+		"derefFloat": func(p *float64) float64 {
 			if p == nil {
 				return 0
 			}
