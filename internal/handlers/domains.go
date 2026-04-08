@@ -45,7 +45,7 @@ func (h *DomainsHandler) List(w http.ResponseWriter, r *http.Request) {
 	allowedSorts := map[string]string{
 		"name":            "domains.name",
 		"expiration_date": "domains.expiration_date",
-		"registrar":       "registrars.name",
+		"registrar":       `"Registrar"."name"`,
 		"auto_renewed":    "domains.auto_renewed",
 		"wishlisted":      "domains.wishlisted",
 		"created_at":      "domains.created_at",
@@ -58,8 +58,8 @@ func (h *DomainsHandler) List(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var domains []models.Domain
-	q := h.db.Preload("Registrar").Where("domains.user_id = ?", user.ID).
-		Joins("LEFT JOIN registrars ON registrars.id = domains.registrar_id").
+	q := h.db.Joins("Registrar").
+		Where("domains.user_id = ?", user.ID).
 		Order(orderCol + " " + dir)
 
 	if err := q.Find(&domains).Error; err != nil {
