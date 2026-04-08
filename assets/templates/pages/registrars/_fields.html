@@ -1,0 +1,25 @@
+{{define "registrars/_fields.html"}}
+<details class="border border-dashed border-gray-300 rounded p-3">
+    <summary class="text-sm text-gray-500 cursor-pointer hover:text-gray-700 select-none">Or create a new registrar</summary>
+    <div class="mt-3 space-y-3">
+        <p class="text-xs text-gray-400">If a name is entered below, a new registrar will be created and assigned — the selector above is ignored.</p>
+        <div class="grid grid-cols-2 gap-3">
+            <div class="col-span-2">
+                <label class="block text-xs font-medium mb-1 text-gray-600">Name</label>
+                <input type="text" name="new_registrar_name" placeholder="Namecheap"
+                    class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:border-gray-500">
+            </div>
+            <div>
+                <label class="block text-xs font-medium mb-1 text-gray-600">URL</label>
+                <input type="url" name="new_registrar_url" placeholder="https://namecheap.com"
+                    class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:border-gray-500">
+            </div>
+            <div>
+                <label class="block text-xs font-medium mb-1 text-gray-600">Currency</label>
+                <input type="text" name="new_registrar_currency" value="USD" maxlength="3"
+                    class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:border-gray-500">
+            </div>
+        </div>
+    </div>
+</details>
+{{end}}

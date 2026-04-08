@@ -90,10 +90,7 @@ func (h *DomainsHandler) ShowAdd(w http.ResponseWriter, r *http.Request) {
 	user := middleware.UserFromContext(r.Context())
 	var registrars []models.Registrar
 	h.db.Where("user_id = ?", user.ID).Find(&registrars)
-	h.render(w, r, "domains/add.html", map[string]any{
-		"Registrars": registrars,
-		"Next":       "/domains/add",
-	}, "registrars/_form.html")
+	h.render(w, r, "domains/add.html", map[string]any{"Registrars": registrars}, "registrars/_fields.html")
 }
 
 func (h *DomainsHandler) Add(w http.ResponseWriter, r *http.Request) {
@@ -118,10 +115,7 @@ func (h *DomainsHandler) ShowBulk(w http.ResponseWriter, r *http.Request) {
 	user := middleware.UserFromContext(r.Context())
 	var registrars []models.Registrar
 	h.db.Where("user_id = ?", user.ID).Find(&registrars)
-	h.render(w, r, "domains/bulk.html", map[string]any{
-		"Registrars": registrars,
-		"Next":       "/domains/bulk",
-	}, "registrars/_form.html")
+	h.render(w, r, "domains/bulk.html", map[string]any{"Registrars": registrars}, "registrars/_fields.html")
 }
 
 func (h *DomainsHandler) Bulk(w http.ResponseWriter, r *http.Request) {
@@ -296,13 +290,36 @@ func (h *DomainsHandler) buildDomain(r *http.Request, userID uint, name string) 
 		AutoRenewed: r.FormValue("auto_renewed") == "on",
 		Wishlisted:  r.FormValue("wishlisted") == "on",
 	}
+	d.RegistrarID = h.resolveRegistrarID(r, userID)
+	return d
+}
+
+// resolveRegistrarID creates a new registrar if new_registrar_name is filled,
+// otherwise uses the selected registrar_id from the form.
+func (h *DomainsHandler) resolveRegistrarID(r *http.Request, userID uint) *uint {
+	if newName := strings.TrimSpace(r.FormValue("new_registrar_name")); newName != "" {
+		currency := strings.TrimSpace(r.FormValue("new_registrar_currency"))
+		if currency == "" {
+			currency = "USD"
+		}
+		reg := models.Registrar{
+			UserID:   userID,
+			Name:     newName,
+			URL:      r.FormValue("new_registrar_url"),
+			Currency: currency,
+		}
+		if h.db.Create(&reg).Error == nil {
+			return &reg.ID
+		}
+		return nil
+	}
 	if regID := r.FormValue("registrar_id"); regID != "" && regID != "0" {
 		var reg models.Registrar
-		if h.db.First(&reg, regID).Error == nil {
-			d.RegistrarID = &reg.ID
+		if h.db.Where("id = ? AND user_id = ?", regID, userID).First(&reg).Error == nil {
+			return &reg.ID
 		}
 	}
-	return d
+	return nil
 }
 
 func (h *DomainsHandler) fetchAndSaveDomain(w http.ResponseWriter, r *http.Request, domain *models.Domain, errRedirect string) {

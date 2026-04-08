@@ -23,6 +23,7 @@
                 <option value="{{.ID}}">{{.Name}}</option>
                 {{end}}
             </select>
+            {{template "registrars/_fields.html" .}}
         </div>
 
         <div class="flex gap-6">
@@ -37,14 +38,11 @@
         </div>
 
         <div class="flex gap-2 pt-2">
-            <button type="submit"
-                class="bg-gray-900 text-white text-sm px-4 py-2 rounded hover:bg-gray-700">
+            <button type="submit" class="bg-gray-900 text-white text-sm px-4 py-2 rounded hover:bg-gray-700">
                 Import
             </button>
             <a href="/domains" class="border border-gray-300 text-sm px-4 py-2 rounded hover:bg-gray-100">Cancel</a>
         </div>
     </form>
-
-    {{template "registrars/_form.html" .Data}}
 </div>
 {{end}}
