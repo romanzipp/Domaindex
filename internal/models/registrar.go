@@ -7,6 +7,7 @@ type Registrar struct {
 	UserID    uint      `gorm:"not null;index"`
 	User      User      `gorm:"foreignKey:UserID"`
 	Name      string    `gorm:"not null"`
+	IanaID    string    `gorm:"index"`
 	URL       string
 	Notes     string
 	Currency  string    `gorm:"default:'USD'"`

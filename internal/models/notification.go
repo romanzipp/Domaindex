@@ -18,5 +18,6 @@ type Notification struct {
 	Type      string     `gorm:"not null"`
 	Message   string     `gorm:"type:text"`
 	SentAt    *time.Time
+	ReadAt    *time.Time
 	CreatedAt time.Time
 }
