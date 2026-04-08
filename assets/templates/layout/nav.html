@@ -9,7 +9,7 @@
                 <a href="/notifications" class="text-sm text-gray-600 hover:text-gray-900">Notifications</a>
             </div>
             <div class="flex items-center gap-4">
-                <span class="text-sm text-gray-500">{{.User.Username}}</span>
+                <a href="/profile" class="text-sm text-gray-500 hover:text-gray-900">{{.User.Username}}</a>
                 <form method="POST" action="/logout">
                     <button type="submit" class="text-sm text-gray-600 hover:text-gray-900">Logout</button>
                 </form>

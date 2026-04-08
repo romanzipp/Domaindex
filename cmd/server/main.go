@@ -48,8 +48,9 @@ func main() {
 	whoisSvc := services.NewWhoisService(database)
 	priceSvc := services.NewPriceService(database)
 	notifSvc := services.NewNotificationService(database, cfg.AppriseURL, cfg.AppriseKey)
+	currencySvc := services.NewCurrencyService()
 
-	domainsH := handlers.NewDomainsHandler(base, whoisSvc, priceSvc)
+	domainsH := handlers.NewDomainsHandler(base, whoisSvc, priceSvc, currencySvc)
 	registrarsH := handlers.NewRegistrarsHandler(base)
 	notificationsH := handlers.NewNotificationsHandler(base)
 
@@ -97,6 +98,10 @@ func main() {
 	protected.HandleFunc("/registrars/{id}/prices/{price_id}/delete", registrarsH.DeletePrice).Methods("POST")
 
 	protected.HandleFunc("/notifications", notificationsH.List).Methods("GET")
+
+	protected.HandleFunc("/profile", base.ShowProfile).Methods("GET")
+	protected.HandleFunc("/profile", base.UpdateProfile).Methods("POST")
+	protected.HandleFunc("/profile/password", base.UpdatePassword).Methods("POST")
 
 	addr := fmt.Sprintf("%s:%s", cfg.AppHost, cfg.AppPort)
 	log.Printf("listening on %s", addr)
