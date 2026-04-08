@@ -131,7 +131,7 @@ func (h *RegistrarsHandler) AddPrice(w http.ResponseWriter, r *http.Request) {
 		TLD:             r.FormValue("tld"),
 		InitialPerYear:  parseFloat(r.FormValue("initial_per_year")),
 		RenewPerYear:    parseFloat(r.FormValue("renew_per_year")),
-		TransferPerYear: parseFloat(r.FormValue("transfer_per_year")),
+		Transfer: parseFloat(r.FormValue("transfer")),
 		PrivacyPerYear:  parseFloat(r.FormValue("privacy_per_year")),
 		MiscPerYear:     parseFloat(r.FormValue("misc_per_year")),
 	}

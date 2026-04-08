@@ -5,11 +5,11 @@ type Price struct {
 	RegistrarID     *uint      `gorm:"index"`
 	DomainID        *uint      `gorm:"index"`
 	TLD             string     // empty = catch-all for registrar defaults
-	InitialPerYear  float64
-	RenewPerYear    float64
-	TransferPerYear float64
-	PrivacyPerYear  float64
-	MiscPerYear     float64
+	InitialPerYear float64
+	RenewPerYear   float64
+	Transfer       float64
+	PrivacyPerYear float64
+	MiscPerYear    float64
 }
 
 func (p *Price) Total() float64 {

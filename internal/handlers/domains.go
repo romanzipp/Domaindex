@@ -252,7 +252,7 @@ func (h *DomainsHandler) SavePriceOverride(w http.ResponseWriter, r *http.Reques
 	h.db.Where("domain_id = ?", domain.ID).FirstOrInit(&price)
 	price.InitialPerYear = parseFloat(r.FormValue("initial_per_year"))
 	price.RenewPerYear = parseFloat(r.FormValue("renew_per_year"))
-	price.TransferPerYear = parseFloat(r.FormValue("transfer_per_year"))
+	price.Transfer = parseFloat(r.FormValue("transfer"))
 	price.PrivacyPerYear = parseFloat(r.FormValue("privacy_per_year"))
 	price.MiscPerYear = parseFloat(r.FormValue("misc_per_year"))
 

@@ -65,7 +65,7 @@
                     <td class="py-2 pr-3 font-mono text-xs">{{if .TLD}}{{.TLD}}{{else}}<span class="text-gray-400">*</span>{{end}}</td>
                     <td class="py-2 pr-3">{{printf "%.2f" .InitialPerYear}}</td>
                     <td class="py-2 pr-3">{{printf "%.2f" .RenewPerYear}}</td>
-                    <td class="py-2 pr-3">{{printf "%.2f" .TransferPerYear}}</td>
+                    <td class="py-2 pr-3">{{printf "%.2f" .Transfer}}</td>
                     <td class="py-2 pr-3">{{printf "%.2f" .PrivacyPerYear}}</td>
                     <td class="py-2 pr-3">{{printf "%.2f" .MiscPerYear}}</td>
                     <td class="py-2">
@@ -99,8 +99,8 @@
                             class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-gray-500">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium mb-1 text-gray-600">Transfer / yr</label>
-                        <input type="number" step="0.01" min="0" name="transfer_per_year" value="0.00"
+                        <label class="block text-xs font-medium mb-1 text-gray-600">Transfer (one-time)</label>
+                        <input type="number" step="0.01" min="0" name="transfer" value="0.00"
                             class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-gray-500">
                     </div>
                     <div>
