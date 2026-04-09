@@ -5,6 +5,7 @@ import (
 
 	"github.com/romanzipp/domain-manager/internal/middleware"
 	"github.com/romanzipp/domain-manager/internal/models"
+	"github.com/romanzipp/domain-manager/internal/seeds"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -94,6 +95,8 @@ func (b *Base) Register(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/register", http.StatusSeeOther)
 		return
 	}
+
+	seeds.ForUser(b.db, user.ID) //nolint:errcheck
 
 	session, _ := b.store.Get(r, "session")
 	session.Values["user_id"] = user.ID

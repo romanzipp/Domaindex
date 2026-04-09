@@ -1,4 +1,4 @@
 PLAN.md
 node_modules/
 package-lock.json
-data/
+/data/*.db

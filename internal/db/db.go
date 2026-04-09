@@ -7,6 +7,7 @@ import (
 
 	"github.com/romanzipp/domain-manager/internal/config"
 	"github.com/romanzipp/domain-manager/internal/models"
+	"github.com/romanzipp/domain-manager/internal/seeds"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -35,6 +36,10 @@ func Connect(cfg *config.Config) (*gorm.DB, error) {
 
 	if err := migrate(db); err != nil {
 		return nil, fmt.Errorf("migrate: %w", err)
+	}
+
+	if err := seeds.ForAllUsers(db); err != nil {
+		return nil, fmt.Errorf("seed: %w", err)
 	}
 
 	return db, nil
