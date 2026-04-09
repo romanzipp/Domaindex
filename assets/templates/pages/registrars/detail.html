@@ -9,42 +9,37 @@
         <a href="#confirm-delete" class="text-xs text-red-600 hover:text-red-800 border border-red-200 px-2 py-1 rounded dark:border-red-800 dark:hover:text-red-400">Delete</a>
     </div>
 
-    <section class="border border-gray-200 rounded p-4 mb-6 dark:border-gray-700">
-        <h2 class="text-sm font-semibold mb-4 text-gray-700 dark:text-gray-300">Details</h2>
+    <section class="card mb-6">
+        <h2 class="section-title mb-4">Details</h2>
         <form method="POST" action="/registrars/{{.Data.Registrar.ID}}" class="space-y-3">
             <div>
                 <label class="block text-sm font-medium mb-1">Name</label>
-                <input type="text" name="name" value="{{.Data.Registrar.Name}}" required
-                    class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
+                <input type="text" name="name" value="{{.Data.Registrar.Name}}" required class="input w-full">
             </div>
             <div class="grid grid-cols-2 gap-3">
                 <div>
                     <label class="block text-sm font-medium mb-1">URL</label>
-                    <input type="url" name="url" value="{{.Data.Registrar.URL}}"
-                        class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
+                    <input type="url" name="url" value="{{.Data.Registrar.URL}}" class="input w-full">
                 </div>
                 <div>
                     <label class="block text-sm font-medium mb-1">IANA ID</label>
-                    <input type="text" name="iana_id" value="{{.Data.Registrar.IanaID}}" placeholder="1234"
-                        class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
+                    <input type="text" name="iana_id" value="{{.Data.Registrar.IanaID}}" placeholder="1234" class="input w-full">
                 </div>
             </div>
             <div>
                 <label class="block text-sm font-medium mb-1">Currency</label>
-                <input type="text" name="currency" value="{{.Data.Registrar.Currency}}" maxlength="3"
-                    class="w-32 border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
+                <input type="text" name="currency" value="{{.Data.Registrar.Currency}}" maxlength="3" class="input w-32">
             </div>
             <div>
                 <label class="block text-sm font-medium mb-1">Notes</label>
-                <textarea name="notes" rows="3"
-                    class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">{{.Data.Registrar.Notes}}</textarea>
+                <textarea name="notes" rows="3" class="input w-full">{{.Data.Registrar.Notes}}</textarea>
             </div>
-            <button type="submit" class="bg-gray-900 text-white text-sm px-4 py-1.5 rounded hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200">Save</button>
+            <button type="submit" class="btn-primary px-4 py-1.5">Save</button>
         </form>
     </section>
 
-    <section class="border border-gray-200 rounded p-4 dark:border-gray-700">
-        <h2 class="text-sm font-semibold mb-4 text-gray-700 dark:text-gray-300">Default prices per TLD</h2>
+    <section class="card">
+        <h2 class="section-title mb-4">Default prices per TLD</h2>
         <p class="text-xs text-gray-500 mb-4 dark:text-gray-400">Leave TLD empty for a catch-all default applied to all domains at this registrar.</p>
 
         {{if .Data.Prices}}
@@ -85,37 +80,31 @@
             <form method="POST" action="/registrars/{{.Data.Registrar.ID}}/prices" class="mt-3 space-y-3">
                 <div>
                     <label class="block text-xs font-medium mb-1 text-gray-600 dark:text-gray-400">TLD (leave empty for catch-all)</label>
-                    <input type="text" name="tld" placeholder="com"
-                        class="w-32 border border-gray-300 rounded px-2 py-1.5 text-sm font-mono focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
+                    <input type="text" name="tld" placeholder="com" class="input w-32 px-2 py-1.5 font-mono">
                 </div>
                 <div class="grid grid-cols-3 gap-3">
                     <div>
                         <label class="block text-xs font-medium mb-1 text-gray-600 dark:text-gray-400">Initial / yr</label>
-                        <input type="number" step="0.01" min="0" name="initial_per_year" value="0.00"
-                            class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
+                        <input type="number" step="0.01" min="0" name="initial_per_year" value="0.00" class="input w-full px-2 py-1.5">
                     </div>
                     <div>
                         <label class="block text-xs font-medium mb-1 text-gray-600 dark:text-gray-400">Renew / yr</label>
-                        <input type="number" step="0.01" min="0" name="renew_per_year" value="0.00"
-                            class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
+                        <input type="number" step="0.01" min="0" name="renew_per_year" value="0.00" class="input w-full px-2 py-1.5">
                     </div>
                     <div>
                         <label class="block text-xs font-medium mb-1 text-gray-600 dark:text-gray-400">Transfer (one-time)</label>
-                        <input type="number" step="0.01" min="0" name="transfer" value="0.00"
-                            class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
+                        <input type="number" step="0.01" min="0" name="transfer" value="0.00" class="input w-full px-2 py-1.5">
                     </div>
                     <div>
                         <label class="block text-xs font-medium mb-1 text-gray-600 dark:text-gray-400">Privacy / yr</label>
-                        <input type="number" step="0.01" min="0" name="privacy_per_year" value="0.00"
-                            class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
+                        <input type="number" step="0.01" min="0" name="privacy_per_year" value="0.00" class="input w-full px-2 py-1.5">
                     </div>
                     <div>
                         <label class="block text-xs font-medium mb-1 text-gray-600 dark:text-gray-400">Misc / yr</label>
-                        <input type="number" step="0.01" min="0" name="misc_per_year" value="0.00"
-                            class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
+                        <input type="number" step="0.01" min="0" name="misc_per_year" value="0.00" class="input w-full px-2 py-1.5">
                     </div>
                 </div>
-                <button type="submit" class="bg-gray-900 text-white text-sm px-4 py-1.5 rounded hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200">Add price rule</button>
+                <button type="submit" class="btn-primary px-4 py-1.5">Add price rule</button>
             </form>
         </details>
     </section>
@@ -128,7 +117,7 @@
             <strong class="text-gray-800 dark:text-gray-200">{{.Data.Registrar.Name}}</strong> and all associated prices will be permanently removed.
         </p>
         <div class="flex gap-2 justify-end">
-            <a href="/registrars/{{.Data.Registrar.ID}}" class="text-sm border border-gray-300 px-4 py-1.5 rounded hover:bg-gray-100 text-gray-600 dark:border-gray-600 dark:hover:bg-gray-700 dark:text-gray-400">Cancel</a>
+            <a href="/registrars/{{.Data.Registrar.ID}}" class="btn-secondary px-4 py-1.5">Cancel</a>
             <form method="POST" action="/registrars/{{.Data.Registrar.ID}}/delete">
                 <button type="submit" class="text-sm bg-red-600 text-white px-4 py-1.5 rounded hover:bg-red-700">Delete</button>
             </form>

@@ -5,18 +5,13 @@
     <form method="POST" action="/login" class="space-y-4">
         <div>
             <label class="block text-sm font-medium mb-1" for="username">Username</label>
-            <input type="text" id="username" name="username" required autofocus
-                class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
+            <input type="text" id="username" name="username" required autofocus class="input w-full">
         </div>
         <div>
             <label class="block text-sm font-medium mb-1" for="password">Password</label>
-            <input type="password" id="password" name="password" required
-                class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
+            <input type="password" id="password" name="password" required class="input w-full">
         </div>
-        <button type="submit"
-            class="w-full bg-gray-900 text-white rounded px-3 py-2 text-sm hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200">
-            Sign in
-        </button>
+        <button type="submit" class="btn-primary w-full px-3 py-2">Sign in</button>
     </form>
     <p class="text-sm text-gray-500 mt-4 text-center dark:text-gray-400">
         No account? <a href="/register" class="text-gray-900 underline dark:text-gray-100">Register</a>

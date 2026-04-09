@@ -18,7 +18,8 @@ Self-hosted domain manager, all of your countless domains (*sure, you will finis
 
 - [ ] SSL check
 - [ ] Domain A/AAAA host information (ASN, country, ...)
-- [ ] CSS darkmode
+- [x] CSS darkmode
+- [ ] Cache CSS assets, cache-bust with current version
 
 ## Deployment
 

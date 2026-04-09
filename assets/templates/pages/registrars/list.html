@@ -2,13 +2,13 @@
 {{define "content"}}
 <div class="flex items-center justify-between mb-6">
     <h1 class="text-xl font-semibold">Registrars</h1>
-    <a href="/registrars/add" class="bg-gray-900 text-white text-sm px-3 py-1.5 rounded hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200">Add registrar</a>
+    <a href="/registrars/add" class="btn-primary px-3 py-1.5">Add registrar</a>
 </div>
 
 {{if .Data}}
 <div class="space-y-3">
     {{range .Data}}
-    <div class="border border-gray-200 rounded p-4 dark:border-gray-700">
+    <div class="card">
         <div class="flex items-center justify-between">
             <div>
                 <a href="/registrars/{{.ID}}" class="font-medium hover:underline">{{.Name}}</a>

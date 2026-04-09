@@ -11,13 +11,12 @@
     </div>
 
     {{/* Edit form */}}
-    <section class="border border-gray-200 rounded p-4 mb-6 dark:border-gray-700">
-        <h2 class="text-sm font-semibold mb-4 text-gray-700 dark:text-gray-300">Settings</h2>
+    <section class="card mb-6">
+        <h2 class="section-title mb-4">Settings</h2>
         <form method="POST" action="/domains/{{.Data.Domain.ID}}" class="space-y-3">
             <div>
                 <label class="block text-sm font-medium mb-1">Registrar{{if .Data.Domain.Registrar}} <a href="/registrars/{{.Data.Domain.Registrar.ID}}" class="text-xs font-normal text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300" title="Open registrar">↗</a>{{end}}</label>
-                <select name="registrar_id"
-                    class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
+                <select name="registrar_id" class="input w-full">
                     <option value="0"{{if not .Data.Domain.RegistrarID}} selected{{end}}>— None —</option>
                     {{range .Data.Registrars}}
                     <option value="{{.ID}}"{{if and $.Data.Domain.RegistrarID (eq (derefUint $.Data.Domain.RegistrarID) .ID)}} selected{{end}}>{{.Name}}</option>
@@ -34,13 +33,13 @@
                     Wishlisted
                 </label>
             </div>
-            <button type="submit" class="bg-gray-900 text-white text-sm px-4 py-1.5 rounded hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200">Save</button>
+            <button type="submit" class="btn-primary px-4 py-1.5">Save</button>
         </form>
     </section>
 
     {{/* Tags */}}
-    <section class="border border-gray-200 rounded p-4 mb-6 dark:border-gray-700">
-        <h2 class="text-sm font-semibold mb-3 text-gray-700 dark:text-gray-300">Tags</h2>
+    <section class="card mb-6">
+        <h2 class="section-title mb-3">Tags</h2>
 
         {{/* Attached tags */}}
         {{if .Data.Domain.Tags}}
@@ -85,8 +84,7 @@
                 <div>
                     <p class="text-xs text-gray-500 mb-2 dark:text-gray-400">Create new</p>
                     <form method="POST" action="/domains/{{.Data.Domain.ID}}/tags" class="flex items-center gap-2 flex-wrap">
-                        <input type="text" name="name" placeholder="Tag name" required
-                            class="border border-gray-300 rounded px-2 py-1 text-xs focus:outline-none focus:border-gray-500 w-32 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
+                        <input type="text" name="name" placeholder="Tag name" required class="input w-32 px-2 py-1 text-xs">
                         <div class="flex gap-1.5 items-center" title="Color">
                             {{range $i, $c := .Data.TagColors}}
                             <label class="cursor-pointer" title="{{$c}}">
@@ -95,7 +93,7 @@
                             </label>
                             {{end}}
                         </div>
-                        <button type="submit" class="text-xs bg-gray-900 text-white px-3 py-1 rounded hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200">Create &amp; attach</button>
+                        <button type="submit" class="btn-primary text-xs px-3 py-1">Create &amp; attach</button>
                     </form>
                 </div>
 
@@ -104,9 +102,9 @@
     </section>
 
     {{/* WHOIS info */}}
-    <section class="border border-gray-200 rounded p-4 mb-6 dark:border-gray-700">
+    <section class="card mb-6">
         <div class="flex items-center justify-between mb-3">
-            <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300">WHOIS info</h2>
+            <h2 class="section-title">WHOIS info</h2>
             <form method="POST" action="/domains/{{.Data.Domain.ID}}/refresh">
                 <button type="submit" class="text-xs border border-gray-300 px-2 py-1 rounded hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700">Refresh</button>
             </form>
@@ -152,9 +150,9 @@
     </section>
 
     {{/* Price override */}}
-    <section class="border border-gray-200 rounded p-4 dark:border-gray-700">
+    <section class="card">
         <div class="flex items-center justify-between mb-3">
-            <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Price override</h2>
+            <h2 class="section-title">Price override</h2>
             {{if .Data.Price}}
             <span class="text-xs text-gray-500 dark:text-gray-400">
                 {{if .Data.Price.DomainID}}Custom{{else}}From registrar{{end}}
@@ -175,41 +173,41 @@
                     <label class="block text-xs font-medium mb-1 text-gray-600 dark:text-gray-400">Initial / yr</label>
                     <input type="number" step="0.01" min="0" name="initial_per_year"
                         value="{{if $p}}{{printf "%.2f" $p.InitialPerYear}}{{end}}"
-                        class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
+                        class="input w-full px-2 py-1.5">
                 </div>
                 <div>
                     <label class="block text-xs font-medium mb-1 text-gray-600 dark:text-gray-400">Renew / yr</label>
                     <input type="number" step="0.01" min="0" name="renew_per_year"
                         value="{{if $p}}{{printf "%.2f" $p.RenewPerYear}}{{end}}"
-                        class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
+                        class="input w-full px-2 py-1.5">
                 </div>
                 <div>
                     <label class="block text-xs font-medium mb-1 text-gray-600 dark:text-gray-400">Transfer (one-time)</label>
                     <input type="number" step="0.01" min="0" name="transfer"
                         value="{{if $p}}{{printf "%.2f" $p.Transfer}}{{end}}"
-                        class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
+                        class="input w-full px-2 py-1.5">
                 </div>
                 <div>
                     <label class="block text-xs font-medium mb-1 text-gray-600 dark:text-gray-400">Privacy / yr</label>
                     <input type="number" step="0.01" min="0" name="privacy_per_year"
                         value="{{if $p}}{{printf "%.2f" $p.PrivacyPerYear}}{{end}}"
-                        class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
+                        class="input w-full px-2 py-1.5">
                 </div>
                 <div>
                     <label class="block text-xs font-medium mb-1 text-gray-600 dark:text-gray-400">Misc / yr</label>
                     <input type="number" step="0.01" min="0" name="misc_per_year"
                         value="{{if $p}}{{printf "%.2f" $p.MiscPerYear}}{{end}}"
-                        class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
+                        class="input w-full px-2 py-1.5">
                 </div>
             </div>
             <div class="flex gap-2">
-                <button type="submit" class="bg-gray-900 text-white text-sm px-4 py-1.5 rounded hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200">Save override</button>
+                <button type="submit" class="btn-primary px-4 py-1.5">Save override</button>
             </div>
         </form>
 
         {{if and .Data.Price .Data.Price.DomainID}}
         <form method="POST" action="/domains/{{.Data.Domain.ID}}/price/delete" class="mt-2">
-            <button type="submit" class="border border-gray-300 text-sm px-4 py-1.5 rounded hover:bg-gray-100 text-gray-600 dark:border-gray-600 dark:hover:bg-gray-700 dark:text-gray-400">Remove override</button>
+            <button type="submit" class="btn-secondary px-4 py-1.5">Remove override</button>
         </form>
         {{end}}
     </section>
@@ -222,7 +220,7 @@
             <strong class="text-gray-800 dark:text-gray-200">{{.Data.Domain.Name}}</strong> and all associated data will be permanently removed.
         </p>
         <div class="flex gap-2 justify-end">
-            <a href="/domains/{{.Data.Domain.ID}}" class="text-sm border border-gray-300 px-4 py-1.5 rounded hover:bg-gray-100 text-gray-600 dark:border-gray-600 dark:hover:bg-gray-700 dark:text-gray-400">Cancel</a>
+            <a href="/domains/{{.Data.Domain.ID}}" class="btn-secondary px-4 py-1.5">Cancel</a>
             <form method="POST" action="/domains/{{.Data.Domain.ID}}/delete">
                 <button type="submit" class="text-sm bg-red-600 text-white px-4 py-1.5 rounded hover:bg-red-700">Delete</button>
             </form>

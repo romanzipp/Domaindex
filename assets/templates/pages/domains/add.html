@@ -9,14 +9,12 @@
     <form method="POST" action="/domains" class="space-y-4">
         <div>
             <label class="block text-sm font-medium mb-1" for="name">Domain name</label>
-            <input type="text" id="name" name="name" placeholder="example.com" required autofocus
-                class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
+            <input type="text" id="name" name="name" placeholder="example.com" required autofocus class="input w-full">
         </div>
 
         <div>
             <label class="block text-sm font-medium mb-1" for="registrar_id">Registrar</label>
-            <select id="registrar_id" name="registrar_id"
-                class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
+            <select id="registrar_id" name="registrar_id" class="input w-full">
                 <option value="0">— None —</option>
                 <option value="whois">— Auto-create from WHOIS —</option>
                 {{range .Data.Registrars}}
@@ -40,10 +38,8 @@
         <p class="text-xs text-gray-500 dark:text-gray-400">WHOIS information will be fetched automatically.</p>
 
         <div class="flex gap-2 pt-2">
-            <button type="submit" class="bg-gray-900 text-white text-sm px-4 py-2 rounded hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200">
-                Add domain
-            </button>
-            <a href="/domains" class="border border-gray-300 text-sm px-4 py-2 rounded hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-800">Cancel</a>
+            <button type="submit" class="btn-primary px-4 py-2">Add domain</button>
+            <a href="/domains" class="btn-secondary px-4 py-2">Cancel</a>
         </div>
     </form>
 </div>
