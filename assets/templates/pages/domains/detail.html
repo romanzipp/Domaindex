@@ -7,13 +7,7 @@
             <h1 class="text-xl font-semibold">{{.Data.Domain.Name}}</h1>
             {{if .Data.Domain.Wishlisted}}<span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded">wishlist</span>{{end}}
         </div>
-        <form method="POST" action="/domains/{{.Data.Domain.ID}}/delete">
-            <button type="submit"
-                onclick="return confirm('Delete {{.Data.Domain.Name}}?')"
-                class="text-xs text-red-600 hover:text-red-800 border border-red-200 px-2 py-1 rounded">
-                Delete
-            </button>
-        </form>
+        <a href="#confirm-delete" class="text-xs text-red-600 hover:text-red-800 border border-red-200 px-2 py-1 rounded">Delete</a>
     </div>
 
     {{/* Edit form */}}
@@ -154,5 +148,20 @@
         </form>
         {{end}}
     </section>
+</div>
+
+<div id="confirm-delete" class="confirm-modal fixed inset-0 bg-black/40 items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full mx-4">
+        <h2 class="text-base font-semibold mb-1">Delete domain?</h2>
+        <p class="text-sm text-gray-500 mb-5">
+            <strong class="text-gray-800">{{.Data.Domain.Name}}</strong> and all associated data will be permanently removed.
+        </p>
+        <div class="flex gap-2 justify-end">
+            <a href="/domains/{{.Data.Domain.ID}}" class="text-sm border border-gray-300 px-4 py-1.5 rounded hover:bg-gray-100 text-gray-600">Cancel</a>
+            <form method="POST" action="/domains/{{.Data.Domain.ID}}/delete">
+                <button type="submit" class="text-sm bg-red-600 text-white px-4 py-1.5 rounded hover:bg-red-700">Delete</button>
+            </form>
+        </div>
+    </div>
 </div>
 {{end}}

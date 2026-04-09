@@ -81,6 +81,12 @@ func (s *WhoisService) UpdateDomain(domain *models.Domain) (changed bool, result
 	domain.DomainStatus = string(statusJSON)
 	domain.DNSSec = result.DNSSec
 
+	if result.RegistrarIanaID != "" && domain.RegistrarID != nil {
+		s.db.Model(&models.Registrar{}).
+			Where("id = ? AND (iana_id IS NULL OR iana_id = '')", *domain.RegistrarID).
+			Update("iana_id", result.RegistrarIanaID)
+	}
+
 	return changed, result, nil
 }
 

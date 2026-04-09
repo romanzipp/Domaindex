@@ -18,6 +18,7 @@ Self-hosted domain manager, all of your countless domains (*sure, you will finis
 
 - [ ] SSL check
 - [ ] Domain A/AAAA host information (ASN, country, ...)
+- [ ] CSS darkmode
 
 ## Deployment
 

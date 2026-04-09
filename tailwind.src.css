@@ -1,2 +1,5 @@
 @import "tailwindcss";
 @source "./assets/templates/**/*.html";
+
+.confirm-modal { display: none; }
+.confirm-modal:target { display: flex; }
