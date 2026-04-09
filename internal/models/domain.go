@@ -20,7 +20,6 @@ type Domain struct {
 	CreatedDate    *time.Time
 	UpdatedDate    *time.Time
 	ExpirationDate *time.Time
-	RegistrarName  string
 	NameServersRaw string `gorm:"column:name_servers;type:text"`
 	DomainStatus   string `gorm:"column:domain_status;type:text"`
 	DNSSec         bool

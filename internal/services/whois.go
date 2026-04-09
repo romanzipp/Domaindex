@@ -103,7 +103,6 @@ func (s *WhoisService) UpdateDomain(domain *models.Domain) (changed bool, result
 	domain.CreatedDate = result.CreatedDate
 	domain.UpdatedDate = result.UpdatedDate
 	domain.ExpirationDate = result.ExpirationDate
-	domain.RegistrarName = result.RegistrarName
 	domain.NameServersRaw = string(nsJSON)
 	domain.DomainStatus = string(statusJSON)
 	domain.DNSSec = result.DNSSec
