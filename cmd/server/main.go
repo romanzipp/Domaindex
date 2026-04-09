@@ -8,13 +8,13 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
-	"github.com/romanzipp/domain-manager/assets"
-	"github.com/romanzipp/domain-manager/internal/config"
-	"github.com/romanzipp/domain-manager/internal/db"
-	"github.com/romanzipp/domain-manager/internal/handlers"
-	"github.com/romanzipp/domain-manager/internal/jobs"
-	"github.com/romanzipp/domain-manager/internal/middleware"
-	"github.com/romanzipp/domain-manager/internal/services"
+	"github.com/romanzipp/domaindex/assets"
+	"github.com/romanzipp/domaindex/internal/config"
+	"github.com/romanzipp/domaindex/internal/db"
+	"github.com/romanzipp/domaindex/internal/handlers"
+	"github.com/romanzipp/domaindex/internal/jobs"
+	"github.com/romanzipp/domaindex/internal/middleware"
+	"github.com/romanzipp/domaindex/internal/services"
 )
 
 func main() {

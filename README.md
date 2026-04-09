@@ -22,10 +22,17 @@ Self-hosted domain manager, all of your countless domains (*sure, you will finis
 
 ## Deployment
 
-See example [Docker compose.yaml](/compose.yaml)
+See example [Docker compose.yml](/compose.yaml)
 
 ```bash
-docker
+docker run -d \
+  --name domaindex \
+  -p 8080:8080 \
+  -v ./data:/app/data \
+  -e APP_SECRET=change-me-to-a-random-secret \
+  -e DB_DRIVER=sqlite \
+  -e DB_DSN=data/domaindex.db \
+  ghcr.io/romanzipp/domaindex:main
 ```
 
 ## Configuration
@@ -41,7 +48,7 @@ docker
 #### sqlite (default)
 
 - DB_DRIVER=sqlite
-- DB_DSN=data/domain-manager.db
+- DB_DSN=data/domaindex.db
 
 #### PostgreSQL
 

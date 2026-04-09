@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/romanzipp/domain-manager/internal/models"
+	"github.com/romanzipp/domaindex/internal/models"
 	"gorm.io/gorm"
 )
 

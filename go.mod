@@ -1,4 +1,4 @@
-module github.com/romanzipp/domain-manager
+module github.com/romanzipp/domaindex
 
 go 1.26.1
 

@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/romanzipp/domain-manager/internal/services"
+	"github.com/romanzipp/domaindex/internal/services"
 )
 
 func templateFuncs() template.FuncMap {

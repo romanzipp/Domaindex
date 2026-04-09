@@ -3,9 +3,9 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/romanzipp/domain-manager/internal/middleware"
-	"github.com/romanzipp/domain-manager/internal/models"
-	"github.com/romanzipp/domain-manager/internal/seeds"
+	"github.com/romanzipp/domaindex/internal/middleware"
+	"github.com/romanzipp/domaindex/internal/models"
+	"github.com/romanzipp/domaindex/internal/seeds"
 	"golang.org/x/crypto/bcrypt"
 )
 

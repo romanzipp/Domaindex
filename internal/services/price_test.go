@@ -3,8 +3,8 @@ package services_test
 import (
 	"testing"
 
-	"github.com/romanzipp/domain-manager/internal/models"
-	"github.com/romanzipp/domain-manager/internal/services"
+	"github.com/romanzipp/domaindex/internal/models"
+	"github.com/romanzipp/domaindex/internal/services"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

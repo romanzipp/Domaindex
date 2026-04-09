@@ -7,7 +7,7 @@ import (
 
 	"github.com/likexian/whois"
 	whoisparser "github.com/likexian/whois-parser"
-	"github.com/romanzipp/domain-manager/internal/models"
+	"github.com/romanzipp/domaindex/internal/models"
 	"gorm.io/gorm"
 )
 

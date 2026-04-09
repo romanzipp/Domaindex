@@ -36,7 +36,7 @@ func Load() *Config {
 		RegistrationEnabled: getEnvBool("REGISTRATION_ENABLED", true),
 
 		DBDriver: getEnv("DB_DRIVER", "sqlite"),
-		DBDSN:    getEnv("DB_DSN", "data/domain-manager.db"),
+		DBDSN:    getEnv("DB_DSN", "data/domaindex.db"),
 
 		AppriseURL: os.Getenv("APPRISE_URL"),
 		AppriseKey: os.Getenv("APPRISE_KEY"),

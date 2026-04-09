@@ -5,9 +5,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/romanzipp/domain-manager/internal/config"
-	"github.com/romanzipp/domain-manager/internal/models"
-	"github.com/romanzipp/domain-manager/internal/seeds"
+	"github.com/romanzipp/domaindex/internal/config"
+	"github.com/romanzipp/domaindex/internal/models"
+	"github.com/romanzipp/domaindex/internal/seeds"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"

@@ -5,8 +5,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/romanzipp/domain-manager/internal/models"
-	"github.com/romanzipp/domain-manager/internal/services"
+	"github.com/romanzipp/domaindex/internal/models"
+	"github.com/romanzipp/domaindex/internal/services"
 	"gorm.io/gorm"
 )
 

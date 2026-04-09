@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	"github.com/gorilla/mux"
-	"github.com/romanzipp/domain-manager/internal/middleware"
-	"github.com/romanzipp/domain-manager/internal/models"
-	"github.com/romanzipp/domain-manager/internal/services"
+	"github.com/romanzipp/domaindex/internal/middleware"
+	"github.com/romanzipp/domaindex/internal/models"
+	"github.com/romanzipp/domaindex/internal/services"
 )
 
 type DomainsHandler struct {

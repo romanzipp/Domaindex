@@ -3,7 +3,7 @@ package seeds
 import (
 	"fmt"
 
-	"github.com/romanzipp/domain-manager/internal/models"
+	"github.com/romanzipp/domaindex/internal/models"
 	"gorm.io/gorm"
 )
 

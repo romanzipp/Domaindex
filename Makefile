@@ -1,5 +1,5 @@
 build:
-	go build -o bin/domain-manager ./cmd/server
+	go build -o bin/domaindex ./cmd/server
 
 run:
 	go run ./cmd/server

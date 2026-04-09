@@ -25,7 +25,7 @@ RUN go mod download
 COPY . .
 COPY --from=css /build/assets/static/css/tailwind.css ./assets/static/css/tailwind.css
 
-RUN CGO_ENABLED=1 GOOS=linux go build -ldflags="-w -s" -o /domain-manager ./cmd/server
+RUN CGO_ENABLED=1 GOOS=linux go build -ldflags="-w -s" -o /domaindex ./cmd/server
 
 # -----------------------------------
 FROM alpine:3.21
@@ -34,8 +34,8 @@ RUN apk add --no-cache ca-certificates tzdata
 
 WORKDIR /app
 
-COPY --from=builder /domain-manager /app/domain-manager
+COPY --from=builder /domaindex /app/domaindex
 
 EXPOSE 8080
 VOLUME ["/app/data"]
-ENTRYPOINT ["/app/domain-manager"]
+ENTRYPOINT ["/app/domaindex"]

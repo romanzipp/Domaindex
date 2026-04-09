@@ -1,5 +1,5 @@
 {
-  "name": "domain-manager",
+  "name": "domaindex",
   "private": true,
   "scripts": {
     "build:css": "tailwindcss -i ./tailwind.src.css -o ./assets/static/css/tailwind.css --minify"

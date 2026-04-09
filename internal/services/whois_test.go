@@ -3,7 +3,7 @@ package services_test
 import (
 	"testing"
 
-	"github.com/romanzipp/domain-manager/internal/services"
+	"github.com/romanzipp/domaindex/internal/services"
 )
 
 func TestExtractTLD(t *testing.T) {

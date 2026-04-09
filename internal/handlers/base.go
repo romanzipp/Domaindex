@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/sessions"
-	"github.com/romanzipp/domain-manager/internal/middleware"
-	"github.com/romanzipp/domain-manager/internal/models"
+	"github.com/romanzipp/domaindex/internal/middleware"
+	"github.com/romanzipp/domaindex/internal/models"
 	"gorm.io/gorm"
 )
 

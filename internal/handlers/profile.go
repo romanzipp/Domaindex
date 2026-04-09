@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/romanzipp/domain-manager/internal/middleware"
+	"github.com/romanzipp/domaindex/internal/middleware"
 	"golang.org/x/crypto/bcrypt"
 )
 
