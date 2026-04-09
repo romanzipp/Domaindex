@@ -255,20 +255,19 @@ func (h *DomainsHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	updates := map[string]any{
-		"auto_renewed": r.FormValue("auto_renewed") == "on",
-		"wishlisted":   r.FormValue("wishlisted") == "on",
-		"registrar_id": nil,
-	}
+	domain.AutoRenewed = r.FormValue("auto_renewed") == "on"
+	domain.Wishlisted = r.FormValue("wishlisted") == "on"
+	domain.Registrar = nil
+	domain.RegistrarID = nil
 
 	if regID := r.FormValue("registrar_id"); regID != "" && regID != "0" {
 		var reg models.Registrar
-		if err := h.db.First(&reg, regID).Error; err == nil {
-			updates["registrar_id"] = reg.ID
+		if h.db.Where("id = ? AND user_id = ?", regID, domain.UserID).First(&reg).Error == nil {
+			domain.RegistrarID = &reg.ID
 		}
 	}
 
-	if err := h.db.Model(domain).Updates(updates).Error; err != nil {
+	if err := h.db.Model(domain).Select("RegistrarID", "AutoRenewed", "Wishlisted").Save(domain).Error; err != nil {
 		h.flashError(w, r, "Failed to update domain")
 	} else {
 		h.flashSuccess(w, r, "Domain updated")
