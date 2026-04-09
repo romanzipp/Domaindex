@@ -59,18 +59,14 @@ func (s *WhoisService) Fetch(domainName string) (*WhoisResult, error) {
 	return result, nil
 }
 
-// ResolveRegistrar finds an existing registrar by IANA ID or name, or creates one from WHOIS data.
+// ResolveRegistrar finds an existing registrar by IANA ID, or creates one if none exists.
+// Returns nil if no IANA ID is present in the WHOIS result.
 func (s *WhoisService) ResolveRegistrar(result *WhoisResult, userID uint) *uint {
-	if result.RegistrarName == "" {
+	if result.RegistrarIanaID == "" {
 		return nil
 	}
 	var reg models.Registrar
-	if result.RegistrarIanaID != "" {
-		if s.db.Where("user_id = ? AND iana_id = ?", userID, result.RegistrarIanaID).First(&reg).Error == nil {
-			return &reg.ID
-		}
-	}
-	if s.db.Where("user_id = ? AND name = ?", userID, result.RegistrarName).First(&reg).Error == nil {
+	if s.db.Where("user_id = ? AND iana_id = ?", userID, result.RegistrarIanaID).First(&reg).Error == nil {
 		return &reg.ID
 	}
 	reg = models.Registrar{
