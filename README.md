@@ -1,6 +1,6 @@
-# Domain Manager
+# Domaindex
 
-Self-hosted domain manager, all of your countless domains (*sure, you will finish that side-project*) in one place.
+Self-hosted domain manager, all of your countless domains (*sure, you will finish that side-project*) in one place. (Domain + Index = Domaindex)
 
 ## Features
 
@@ -64,6 +64,12 @@ The app comes with a set of default registrars (25 most popular) and default pri
 Information about domain pricing has been fetched from the following sources and are included in `.csv` seed files.
 
 - `1910` Cloudflare: [cfdomainpricing JSON](https://cfdomainpricing.com/prices.json)
+
+## Development
+
+- Requirements: go 1.26+, node/npm for tailwind
+
+See the [Makefile](/Makefile) for all available commands.
 
 ## Authors
 
