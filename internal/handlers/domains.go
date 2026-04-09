@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"slices"
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -28,10 +29,11 @@ func NewDomainsHandler(base *Base, whois *services.WhoisService, price *services
 }
 
 type DomainRow struct {
-	Domain          *models.Domain
-	Price           *models.Price
-	YearlyCost      *float64
-	PriceCurrency   string
+	Domain        *models.Domain
+	Price         *models.Price
+	YearlyCost    *float64
+	PriceCurrency string
+	PriceColor    string
 }
 
 type DomainsListData struct {
@@ -113,6 +115,32 @@ func (h *DomainsHandler) List(w http.ResponseWriter, r *http.Request) {
 		}
 
 		rows[i] = row
+	}
+
+	// Collect non-zero costs, compute percentile thresholds, assign colour per row.
+	var costs []float64
+	for _, row := range rows {
+		if row.YearlyCost != nil && *row.YearlyCost > 0 {
+			costs = append(costs, *row.YearlyCost)
+		}
+	}
+	slices.Sort(costs)
+	p25 := costPercentile(costs, 0.25)
+	p50 := costPercentile(costs, 0.50)
+	p75 := costPercentile(costs, 0.75)
+	for i := range rows {
+		if rows[i].YearlyCost == nil || *rows[i].YearlyCost == 0 {
+			continue
+		}
+		v := *rows[i].YearlyCost
+		switch {
+		case v > p75:
+			rows[i].PriceColor = "text-red-600 dark:text-red-400"
+		case v > p50:
+			rows[i].PriceColor = "text-orange-500 dark:text-orange-400"
+		case v > p25:
+			rows[i].PriceColor = "text-yellow-600 dark:text-yellow-500"
+		}
 	}
 
 	var total float64
@@ -414,4 +442,18 @@ func (h *DomainsHandler) fetchAndSaveDomain(w http.ResponseWriter, r *http.Reque
 
 	h.flashSuccess(w, r, "Domain added")
 	http.Redirect(w, r, "/domains", http.StatusSeeOther)
+}
+
+// costPercentile returns the p-th percentile (0–1) of a sorted slice.
+func costPercentile(sorted []float64, p float64) float64 {
+	if len(sorted) == 0 {
+		return 0
+	}
+	idx := p * float64(len(sorted)-1)
+	lo := int(idx)
+	if lo+1 >= len(sorted) {
+		return sorted[lo]
+	}
+	frac := idx - float64(lo)
+	return sorted[lo] + frac*(sorted[lo+1]-sorted[lo])
 }
