@@ -63,7 +63,7 @@ func (h *DomainsHandler) List(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var domains []models.Domain
-	q := h.db.Joins("Registrar").
+	q := h.db.Preload("Tags").Joins("Registrar").
 		Where("domains.user_id = ?", user.ID).
 		Order(orderCol + " " + dir)
 
@@ -201,14 +201,33 @@ func (h *DomainsHandler) Show(w http.ResponseWriter, r *http.Request) {
 	}
 	price := h.price.ComputedPrice(domain)
 
-	var registrars []models.Registrar
 	user := middleware.UserFromContext(r.Context())
+
+	var registrars []models.Registrar
 	h.db.Where("user_id = ?", user.ID).Order("name").Find(&registrars)
 
+	// Load attached tags and all user tags not yet attached to this domain.
+	h.db.Model(domain).Association("Tags").Find(&domain.Tags)
+
+	attachedIDs := make(map[uint]bool, len(domain.Tags))
+	for _, t := range domain.Tags {
+		attachedIDs[t.ID] = true
+	}
+	var allTags []models.Tag
+	h.db.Where("user_id = ?", user.ID).Order("name").Find(&allTags)
+	var availableTags []models.Tag
+	for _, t := range allTags {
+		if !attachedIDs[t.ID] {
+			availableTags = append(availableTags, t)
+		}
+	}
+
 	h.render(w, r, "domains/detail.html", map[string]any{
-		"Domain":     domain,
-		"Price":      price,
-		"Registrars": registrars,
+		"Domain":        domain,
+		"Price":         price,
+		"Registrars":    registrars,
+		"AvailableTags": availableTags,
+		"TagColors":     models.TagColors,
 	})
 }
 

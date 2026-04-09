@@ -1,4 +1,4 @@
-{{define "title"}}{{.Data.Domain.Name}} — Domain Manager{{end}}
+{{define "title"}}{{.Data.Domain.Name}} | Domain Manager{{end}}
 {{define "content"}}
 <div class="max-w-2xl">
     <div class="flex items-center justify-between mb-6">
@@ -36,6 +36,71 @@
             </div>
             <button type="submit" class="bg-gray-900 text-white text-sm px-4 py-1.5 rounded hover:bg-gray-700">Save</button>
         </form>
+    </section>
+
+    {{/* Tags */}}
+    <section class="border border-gray-200 rounded p-4 mb-6">
+        <h2 class="text-sm font-semibold mb-3 text-gray-700">Tags</h2>
+
+        {{/* Attached tags */}}
+        {{if .Data.Domain.Tags}}
+        <div class="flex flex-wrap gap-1.5 mb-3">
+            {{range .Data.Domain.Tags}}
+            <span class="tag tag-{{.Color}}">
+                {{.Name}}
+                <form method="POST" action="/domains/{{$.Data.Domain.ID}}/tags/{{.ID}}/detach" class="contents">
+                    <button type="submit" class="leading-none hover:opacity-70" title="Remove">×</button>
+                </form>
+            </span>
+            {{end}}
+        </div>
+        {{end}}
+
+        {{/* Attach existing or create new */}}
+        <details class="text-sm">
+            <summary class="text-xs text-gray-500 cursor-pointer hover:text-gray-700 select-none w-fit">Add tag</summary>
+            <div class="mt-3 space-y-4">
+
+                {{/* Attach existing */}}
+                {{if .Data.AvailableTags}}
+                <div>
+                    <p class="text-xs text-gray-500 mb-2">Your tags</p>
+                    <div class="flex flex-wrap gap-1.5">
+                        {{range .Data.AvailableTags}}
+                        <div class="flex items-center gap-1">
+                            <form method="POST" action="/domains/{{$.Data.Domain.ID}}/tags" class="contents">
+                                <input type="hidden" name="tag_id" value="{{.ID}}">
+                                <button type="submit" class="tag tag-{{.Color}} hover:opacity-80">+ {{.Name}}</button>
+                            </form>
+                            <form method="POST" action="/tags/{{.ID}}/delete" class="contents">
+                                <button type="submit" class="text-xs text-gray-300 hover:text-red-500" title="Delete tag globally">×</button>
+                            </form>
+                        </div>
+                        {{end}}
+                    </div>
+                </div>
+                {{end}}
+
+                {{/* Create new tag */}}
+                <div>
+                    <p class="text-xs text-gray-500 mb-2">Create new</p>
+                    <form method="POST" action="/domains/{{.Data.Domain.ID}}/tags" class="flex items-center gap-2 flex-wrap">
+                        <input type="text" name="name" placeholder="Tag name" required
+                            class="border border-gray-300 rounded px-2 py-1 text-xs focus:outline-none focus:border-gray-500 w-32">
+                        <div class="flex gap-1.5 items-center" title="Color">
+                            {{range $i, $c := .Data.TagColors}}
+                            <label class="cursor-pointer" title="{{$c}}">
+                                <input type="radio" name="color" value="{{$c}}" class="sr-only peer"{{if eq $i 0}} checked{{end}}>
+                                <span class="block w-4 h-4 rounded-full tag-{{$c}} peer-checked:ring-2 peer-checked:ring-offset-1 peer-checked:ring-gray-600"></span>
+                            </label>
+                            {{end}}
+                        </div>
+                        <button type="submit" class="text-xs bg-gray-900 text-white px-3 py-1 rounded hover:bg-gray-700">Create &amp; attach</button>
+                    </form>
+                </div>
+
+            </div>
+        </details>
     </section>
 
     {{/* WHOIS info */}}

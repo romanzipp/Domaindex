@@ -24,6 +24,7 @@ type Domain struct {
 	NameServersRaw string `gorm:"column:name_servers;type:text"`
 	DomainStatus   string `gorm:"column:domain_status;type:text"`
 	DNSSec         bool
+	Tags           []Tag          `gorm:"many2many:domain_tags;"`
 	PriceOverride  *Price         `gorm:"foreignKey:DomainID"`
 	Notifications  []Notification `gorm:"foreignKey:DomainID"`
 	CreatedAt      time.Time

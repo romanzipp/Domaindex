@@ -52,6 +52,7 @@ func migrate(db *gorm.DB) error {
 		&models.Price{},
 		&models.Domain{},
 		&models.Notification{},
+		&models.Tag{},
 	)
 }
 

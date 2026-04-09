@@ -53,6 +53,7 @@ func main() {
 	domainsH := handlers.NewDomainsHandler(base, whoisSvc, priceSvc, currencySvc)
 	registrarsH := handlers.NewRegistrarsHandler(base)
 	notificationsH := handlers.NewNotificationsHandler(base)
+	tagsH := handlers.NewTagsHandler(base)
 
 	worker := jobs.NewWorker(database, whoisSvc, notifSvc, cfg.WhoisRefreshInterval)
 	worker.Start()
@@ -87,6 +88,9 @@ func main() {
 	protected.HandleFunc("/domains/{id}/refresh", domainsH.RefreshWhois).Methods("POST")
 	protected.HandleFunc("/domains/{id}/price", domainsH.SavePriceOverride).Methods("POST")
 	protected.HandleFunc("/domains/{id}/price/delete", domainsH.DeletePriceOverride).Methods("POST")
+	protected.HandleFunc("/domains/{id}/tags", tagsH.AttachTag).Methods("POST")
+	protected.HandleFunc("/domains/{id}/tags/{tag_id}/detach", tagsH.DetachTag).Methods("POST")
+	protected.HandleFunc("/tags/{tag_id}/delete", tagsH.DeleteTag).Methods("POST")
 
 	protected.HandleFunc("/registrars", registrarsH.List).Methods("GET")
 	protected.HandleFunc("/registrars", registrarsH.Add).Methods("POST")
