@@ -59,6 +59,33 @@ func (s *WhoisService) Fetch(domainName string) (*WhoisResult, error) {
 	return result, nil
 }
 
+// ResolveRegistrar finds an existing registrar by IANA ID or name, or creates one from WHOIS data.
+func (s *WhoisService) ResolveRegistrar(result *WhoisResult, userID uint) *uint {
+	if result.RegistrarName == "" {
+		return nil
+	}
+	var reg models.Registrar
+	if result.RegistrarIanaID != "" {
+		if s.db.Where("user_id = ? AND iana_id = ?", userID, result.RegistrarIanaID).First(&reg).Error == nil {
+			return &reg.ID
+		}
+	}
+	if s.db.Where("user_id = ? AND name = ?", userID, result.RegistrarName).First(&reg).Error == nil {
+		return &reg.ID
+	}
+	reg = models.Registrar{
+		UserID:   userID,
+		Name:     result.RegistrarName,
+		IanaID:   result.RegistrarIanaID,
+		URL:      result.RegistrarURL,
+		Currency: "USD",
+	}
+	if s.db.Create(&reg).Error != nil {
+		return nil
+	}
+	return &reg.ID
+}
+
 func (s *WhoisService) UpdateDomain(domain *models.Domain) (changed bool, result *WhoisResult, err error) {
 	result, err = s.Fetch(domain.Name)
 	if err != nil {

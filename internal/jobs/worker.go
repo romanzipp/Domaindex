@@ -15,6 +15,7 @@ type Worker struct {
 	whois        *services.WhoisService
 	notification *services.NotificationService
 	interval     time.Duration
+	trigger      chan struct{}
 }
 
 func NewWorker(db *gorm.DB, whois *services.WhoisService, notification *services.NotificationService, interval time.Duration) *Worker {
@@ -23,6 +24,7 @@ func NewWorker(db *gorm.DB, whois *services.WhoisService, notification *services
 		whois:        whois,
 		notification: notification,
 		interval:     interval,
+		trigger:      make(chan struct{}, 1),
 	}
 }
 
@@ -30,12 +32,25 @@ func (w *Worker) Start() {
 	go w.run()
 }
 
+// RunNow triggers an immediate worker cycle. Non-blocking: if a run is already queued, this is a no-op.
+func (w *Worker) RunNow() {
+	select {
+	case w.trigger <- struct{}{}:
+	default:
+	}
+}
+
 func (w *Worker) run() {
 	w.tick()
 	ticker := time.NewTicker(w.interval)
 	defer ticker.Stop()
-	for range ticker.C {
-		w.tick()
+	for {
+		select {
+		case <-ticker.C:
+			w.tick()
+		case <-w.trigger:
+			w.tick()
+		}
 	}
 }
 
@@ -56,10 +71,13 @@ func (w *Worker) refreshWhois() error {
 
 	for i := range domains {
 		d := &domains[i]
-		changed, _, err := w.whois.UpdateDomain(d)
+		changed, result, err := w.whois.UpdateDomain(d)
 		if err != nil {
 			log.Printf("whois fetch failed for %s: %v", d.Name, err)
 			continue
+		}
+		if d.RegistrarID == nil && result != nil {
+			d.RegistrarID = w.whois.ResolveRegistrar(result, d.UserID)
 		}
 		if err := w.db.Save(d).Error; err != nil {
 			log.Printf("save domain %s: %v", d.Name, err)

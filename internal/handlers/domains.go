@@ -11,15 +11,20 @@ import (
 	"github.com/romanzipp/domaindex/internal/services"
 )
 
+type WorkerTrigger interface {
+	RunNow()
+}
+
 type DomainsHandler struct {
 	*Base
 	whois    *services.WhoisService
 	price    *services.PriceService
 	currency *services.CurrencyService
+	worker   WorkerTrigger
 }
 
-func NewDomainsHandler(base *Base, whois *services.WhoisService, price *services.PriceService, currency *services.CurrencyService) *DomainsHandler {
-	return &DomainsHandler{Base: base, whois: whois, price: price, currency: currency}
+func NewDomainsHandler(base *Base, whois *services.WhoisService, price *services.PriceService, currency *services.CurrencyService, worker WorkerTrigger) *DomainsHandler {
+	return &DomainsHandler{Base: base, whois: whois, price: price, currency: currency, worker: worker}
 }
 
 type DomainRow struct {
@@ -186,12 +191,8 @@ func (h *DomainsHandler) Bulk(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 		domain := h.buildDomain(r, user.ID, name)
-		_, whoisResult, _ := h.whois.UpdateDomain(domain)
-		if r.FormValue("registrar_id") == "whois" && whoisResult != nil {
-			domain.RegistrarID = h.registrarFromWhois(whoisResult, user.ID)
-		}
 		if err := h.db.Create(domain).Error; err != nil {
-			errs = append(errs, name+": could not save")
+			errs = append(errs, name+": already exists")
 			continue
 		}
 		added++
@@ -202,6 +203,7 @@ func (h *DomainsHandler) Bulk(w http.ResponseWriter, r *http.Request) {
 	}
 	if added > 0 {
 		h.flashSuccess(w, r, fmt.Sprintf("Added %d domain(s)", added))
+		h.worker.RunNow()
 	}
 	http.Redirect(w, r, "/domains", http.StatusSeeOther)
 }
@@ -253,19 +255,20 @@ func (h *DomainsHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	domain.AutoRenewed = r.FormValue("auto_renewed") == "on"
-	domain.Wishlisted = r.FormValue("wishlisted") == "on"
+	updates := map[string]any{
+		"auto_renewed": r.FormValue("auto_renewed") == "on",
+		"wishlisted":   r.FormValue("wishlisted") == "on",
+		"registrar_id": nil,
+	}
 
 	if regID := r.FormValue("registrar_id"); regID != "" && regID != "0" {
 		var reg models.Registrar
 		if err := h.db.First(&reg, regID).Error; err == nil {
-			domain.RegistrarID = &reg.ID
+			updates["registrar_id"] = reg.ID
 		}
-	} else {
-		domain.RegistrarID = nil
 	}
 
-	if err := h.db.Save(domain).Error; err != nil {
+	if err := h.db.Model(domain).Updates(updates).Error; err != nil {
 		h.flashError(w, r, "Failed to update domain")
 	} else {
 		h.flashSuccess(w, r, "Domain updated")
@@ -387,29 +390,8 @@ func (h *DomainsHandler) resolveRegistrarID(r *http.Request, userID uint) *uint 
 	return nil
 }
 
-// registrarFromWhois finds or creates a registrar using WHOIS data.
-// Looks up by IANA ID first (globally unique); falls back to name if no IANA ID.
 func (h *DomainsHandler) registrarFromWhois(result *services.WhoisResult, userID uint) *uint {
-	if result.RegistrarName == "" {
-		return nil
-	}
-	var reg models.Registrar
-	if result.RegistrarIanaID != "" {
-		if h.db.Where("user_id = ? AND iana_id = ?", userID, result.RegistrarIanaID).First(&reg).Error == nil {
-			return &reg.ID
-		}
-	}
-	reg = models.Registrar{
-		UserID:  userID,
-		Name:    result.RegistrarName,
-		IanaID:  result.RegistrarIanaID,
-		URL:     result.RegistrarURL,
-		Currency: "USD",
-	}
-	if h.db.Create(&reg).Error != nil {
-		return nil
-	}
-	return &reg.ID
+	return h.whois.ResolveRegistrar(result, userID)
 }
 
 func (h *DomainsHandler) fetchAndSaveDomain(w http.ResponseWriter, r *http.Request, domain *models.Domain, errRedirect string) {

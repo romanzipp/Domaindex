@@ -11,7 +11,7 @@
             <label class="block text-sm font-medium mb-1" for="domains">Domain names</label>
             <textarea id="domains" name="domains" rows="10" placeholder="example.com&#10;example.org&#10;example.net" required
                 class="w-full border border-gray-300 rounded px-3 py-2 text-sm font-mono focus:outline-none focus:border-gray-500"></textarea>
-            <p class="text-xs text-gray-500 mt-1">One domain per line. WHOIS will be fetched for each.</p>
+            <p class="text-xs text-gray-500 mt-1">One domain per line. WHOIS info will be fetched in the background.</p>
         </div>
 
         <div>
@@ -19,7 +19,6 @@
             <select id="registrar_id" name="registrar_id"
                 class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500">
                 <option value="0">— None —</option>
-                <option value="whois">— Auto-create from WHOIS —</option>
                 {{range .Data.Registrars}}
                 <option value="{{.ID}}">{{.Name}}</option>
                 {{end}}

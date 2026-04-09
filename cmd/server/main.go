@@ -50,13 +50,14 @@ func main() {
 	notifSvc := services.NewNotificationService(database, cfg.AppriseURL, cfg.AppriseKey)
 	currencySvc := services.NewCurrencyService()
 
-	domainsH := handlers.NewDomainsHandler(base, whoisSvc, priceSvc, currencySvc)
 	registrarsH := handlers.NewRegistrarsHandler(base)
 	notificationsH := handlers.NewNotificationsHandler(base)
 	tagsH := handlers.NewTagsHandler(base)
 
 	worker := jobs.NewWorker(database, whoisSvc, notifSvc, cfg.WhoisRefreshInterval)
 	worker.Start()
+
+	domainsH := handlers.NewDomainsHandler(base, whoisSvc, priceSvc, currencySvc, worker)
 
 	auth := middleware.NewAuthMiddleware(store, database)
 
