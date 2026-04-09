@@ -125,20 +125,20 @@ func (h *DomainsHandler) List(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	slices.Sort(costs)
-	p25 := costPercentile(costs, 0.25)
 	p50 := costPercentile(costs, 0.50)
 	p75 := costPercentile(costs, 0.75)
+	p90 := costPercentile(costs, 0.90)
 	for i := range rows {
 		if rows[i].YearlyCost == nil || *rows[i].YearlyCost == 0 {
 			continue
 		}
 		v := *rows[i].YearlyCost
 		switch {
-		case v > p75:
+		case v > p90:
 			rows[i].PriceColor = "text-red-600 dark:text-red-400"
-		case v > p50:
+		case v > p75:
 			rows[i].PriceColor = "text-orange-500 dark:text-orange-400"
-		case v > p25:
+		case v > p50:
 			rows[i].PriceColor = "text-yellow-600 dark:text-yellow-500"
 		}
 	}
