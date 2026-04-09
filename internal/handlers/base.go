@@ -22,12 +22,15 @@ func NewBase(db *gorm.DB, store *sessions.CookieStore, templateFS fs.FS, registr
 	return &Base{db: db, store: store, templateFS: templateFS, RegistrationEnabled: registrationEnabled}
 }
 
+const AppName = "Domaindex"
+
 type PageData struct {
-	User              *models.User
-	Data              any
-	FlashSuccess      []string
-	FlashError        []string
-	UnreadCount       int64
+	AppName      string
+	User         *models.User
+	Data         any
+	FlashSuccess []string
+	FlashError   []string
+	UnreadCount  int64
 }
 
 func (b *Base) render(w http.ResponseWriter, r *http.Request, page string, data any, partials ...string) {
@@ -43,6 +46,7 @@ func (b *Base) render(w http.ResponseWriter, r *http.Request, page string, data 
 
 	user := middleware.UserFromContext(r.Context())
 	pd := PageData{
+		AppName:      AppName,
 		User:         user,
 		Data:         data,
 		FlashSuccess: getFlash(w, r, b.store, "success"),
