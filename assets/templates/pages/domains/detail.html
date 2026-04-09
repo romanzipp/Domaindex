@@ -21,7 +21,7 @@
         <h2 class="text-sm font-semibold mb-4 text-gray-700">Settings</h2>
         <form method="POST" action="/domains/{{.Data.Domain.ID}}" class="space-y-3">
             <div>
-                <label class="block text-sm font-medium mb-1">Registrar</label>
+                <label class="block text-sm font-medium mb-1">Registrar{{if .Data.Domain.Registrar}} <a href="/registrars/{{.Data.Domain.Registrar.ID}}" class="text-xs font-normal text-gray-400 hover:text-gray-600" title="Open registrar">↗</a>{{end}}</label>
                 <select name="registrar_id"
                     class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500">
                     <option value="0"{{if not .Data.Domain.RegistrarID}} selected{{end}}>— None —</option>

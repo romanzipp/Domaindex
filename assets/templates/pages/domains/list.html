@@ -46,7 +46,7 @@
                 <a href="/domains/{{.Domain.ID}}" class="font-medium text-gray-900 hover:underline">{{.Domain.Name}}</a>{{if .Domain.Wishlisted}}<span class="ml-1" title="Wishlisted — tracking for expiry">⭐</span>{{end}}
             </td>
             <td class="py-2 pr-4 text-gray-600">
-                {{if .Domain.Registrar}}{{.Domain.Registrar.Name}}{{else}}<span class="text-gray-400">—</span>{{end}}
+                {{if .Domain.Registrar}}<a href="/registrars/{{.Domain.Registrar.ID}}" class="hover:underline">{{.Domain.Registrar.Name}}</a>{{else}}<span class="text-gray-400">—</span>{{end}}
             </td>
             <td class="py-2 pr-4">
                 {{if .Domain.ExpirationDate}}
