@@ -2,24 +2,24 @@
 {{define "content"}}
 <div class="flex items-center justify-between mb-6">
     <h1 class="text-xl font-semibold">Registrars</h1>
-    <a href="/registrars/add" class="bg-gray-900 text-white text-sm px-3 py-1.5 rounded hover:bg-gray-700">Add registrar</a>
+    <a href="/registrars/add" class="bg-gray-900 text-white text-sm px-3 py-1.5 rounded hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200">Add registrar</a>
 </div>
 
 {{if .Data}}
 <div class="space-y-3">
     {{range .Data}}
-    <div class="border border-gray-200 rounded p-4">
+    <div class="border border-gray-200 rounded p-4 dark:border-gray-700">
         <div class="flex items-center justify-between">
             <div>
                 <a href="/registrars/{{.ID}}" class="font-medium hover:underline">{{.Name}}</a>
-                <span class="text-xs text-gray-400 ml-2">{{.Currency}}</span>
-                {{if .URL}}<a href="{{.URL}}" target="_blank" rel="noopener" class="text-xs text-gray-400 ml-2 hover:text-gray-600">↗</a>{{end}}
+                <span class="text-xs text-gray-400 ml-2 dark:text-gray-500">{{.Currency}}</span>
+                {{if .URL}}<a href="{{.URL}}" target="_blank" rel="noopener" class="text-xs text-gray-400 ml-2 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">↗</a>{{end}}
             </div>
-            <a href="/registrars/{{.ID}}" class="text-xs text-gray-500 hover:text-gray-900">Edit</a>
+            <a href="/registrars/{{.ID}}" class="text-xs text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">Edit</a>
         </div>
-        {{if .Notes}}<p class="text-sm text-gray-500 mt-1">{{.Notes}}</p>{{end}}
+        {{if .Notes}}<p class="text-sm text-gray-500 mt-1 dark:text-gray-400">{{.Notes}}</p>{{end}}
         {{if .Prices}}
-        <div class="mt-2 text-xs text-gray-400">
+        <div class="mt-2 text-xs text-gray-400 dark:text-gray-500">
             {{len .Prices}} price rule(s)
         </div>
         {{end}}
@@ -27,9 +27,9 @@
     {{end}}
 </div>
 {{else}}
-<div class="text-center py-16 text-gray-400">
+<div class="text-center py-16 text-gray-400 dark:text-gray-500">
     <p class="mb-2">No registrars yet.</p>
-    <a href="/registrars/add" class="text-gray-600 underline text-sm">Add your first registrar</a>
+    <a href="/registrars/add" class="text-gray-600 underline text-sm dark:text-gray-400">Add your first registrar</a>
 </div>
 {{end}}
 {{end}}

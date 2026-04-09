@@ -2,7 +2,7 @@
 {{define "content"}}
 <div class="max-w-lg">
     <div class="flex items-center gap-3 mb-6">
-        <a href="/domains" class="text-sm text-gray-500 hover:text-gray-900">← Domains</a>
+        <a href="/domains" class="text-sm text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">← Domains</a>
         <h1 class="text-xl font-semibold">Bulk import</h1>
     </div>
 
@@ -10,14 +10,14 @@
         <div>
             <label class="block text-sm font-medium mb-1" for="domains">Domain names</label>
             <textarea id="domains" name="domains" rows="10" placeholder="example.com&#10;example.org&#10;example.net" required
-                class="w-full border border-gray-300 rounded px-3 py-2 text-sm font-mono focus:outline-none focus:border-gray-500"></textarea>
-            <p class="text-xs text-gray-500 mt-1">One domain per line. WHOIS info will be fetched in the background.</p>
+                class="w-full border border-gray-300 rounded px-3 py-2 text-sm font-mono focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400"></textarea>
+            <p class="text-xs text-gray-500 mt-1 dark:text-gray-400">One domain per line. WHOIS info will be fetched in the background.</p>
         </div>
 
         <div>
             <label class="block text-sm font-medium mb-1" for="registrar_id">Registrar (applied to all)</label>
             <select id="registrar_id" name="registrar_id"
-                class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500">
+                class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
                 <option value="0">— None —</option>
                 {{range .Data.Registrars}}
                 <option value="{{.ID}}">{{.Name}}</option>
@@ -38,10 +38,10 @@
         </div>
 
         <div class="flex gap-2 pt-2">
-            <button type="submit" class="bg-gray-900 text-white text-sm px-4 py-2 rounded hover:bg-gray-700">
+            <button type="submit" class="bg-gray-900 text-white text-sm px-4 py-2 rounded hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200">
                 Import
             </button>
-            <a href="/domains" class="border border-gray-300 text-sm px-4 py-2 rounded hover:bg-gray-100">Cancel</a>
+            <a href="/domains" class="border border-gray-300 text-sm px-4 py-2 rounded hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-800">Cancel</a>
         </div>
     </form>
 </div>

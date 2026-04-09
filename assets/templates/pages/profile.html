@@ -3,51 +3,51 @@
 <div class="max-w-lg">
     <h1 class="text-xl font-semibold mb-6">Profile</h1>
 
-    <section class="border border-gray-200 rounded p-4 mb-6">
-        <h2 class="text-sm font-semibold mb-4 text-gray-700">Account details</h2>
+    <section class="border border-gray-200 rounded p-4 mb-6 dark:border-gray-700">
+        <h2 class="text-sm font-semibold mb-4 text-gray-700 dark:text-gray-300">Account details</h2>
         <form method="POST" action="/profile" class="space-y-3">
             <div>
                 <label class="block text-sm font-medium mb-1" for="username">Username</label>
                 <input type="text" id="username" name="username" value="{{.User.Username}}" required
-                    class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500">
+                    class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
             </div>
             <div>
                 <label class="block text-sm font-medium mb-1" for="email">Email</label>
                 <input type="email" id="email" name="email" value="{{.User.Email}}" required
-                    class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500">
+                    class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
             </div>
             <div>
                 <label class="block text-sm font-medium mb-1" for="default_currency">Default currency</label>
                 <input type="text" id="default_currency" name="default_currency"
                     value="{{.User.DefaultCurrency}}" maxlength="3" placeholder="USD"
-                    class="w-32 border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500">
-                <p class="text-xs text-gray-400 mt-1">Used to convert all domain costs in the table. ISO 4217 code (e.g. USD, EUR, GBP).</p>
+                    class="w-32 border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
+                <p class="text-xs text-gray-400 mt-1 dark:text-gray-500">Used to convert all domain costs in the table. ISO 4217 code (e.g. USD, EUR, GBP).</p>
             </div>
-            <button type="submit" class="bg-gray-900 text-white text-sm px-4 py-1.5 rounded hover:bg-gray-700">
+            <button type="submit" class="bg-gray-900 text-white text-sm px-4 py-1.5 rounded hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200">
                 Save
             </button>
         </form>
     </section>
 
-    <section class="border border-gray-200 rounded p-4">
-        <h2 class="text-sm font-semibold mb-4 text-gray-700">Change password</h2>
+    <section class="border border-gray-200 rounded p-4 dark:border-gray-700">
+        <h2 class="text-sm font-semibold mb-4 text-gray-700 dark:text-gray-300">Change password</h2>
         <form method="POST" action="/profile/password" class="space-y-3">
             <div>
                 <label class="block text-sm font-medium mb-1" for="current_password">Current password</label>
                 <input type="password" id="current_password" name="current_password" required
-                    class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500">
+                    class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
             </div>
             <div>
                 <label class="block text-sm font-medium mb-1" for="new_password">New password</label>
                 <input type="password" id="new_password" name="new_password" required
-                    class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500">
+                    class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
             </div>
             <div>
                 <label class="block text-sm font-medium mb-1" for="confirm_password">Confirm new password</label>
                 <input type="password" id="confirm_password" name="confirm_password" required
-                    class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500">
+                    class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
             </div>
-            <button type="submit" class="bg-gray-900 text-white text-sm px-4 py-1.5 rounded hover:bg-gray-700">
+            <button type="submit" class="bg-gray-900 text-white text-sm px-4 py-1.5 rounded hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200">
                 Update password
             </button>
         </form>

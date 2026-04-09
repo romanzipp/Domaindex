@@ -3,8 +3,8 @@
 <div class="flex items-center justify-between mb-6">
     <h1 class="text-xl font-semibold">Domains</h1>
     <div class="flex gap-2">
-        <a href="/domains/bulk" class="border border-gray-300 text-sm px-3 py-1.5 rounded hover:bg-gray-100">Bulk import</a>
-        <a href="/domains/add" class="bg-gray-900 text-white text-sm px-3 py-1.5 rounded hover:bg-gray-700">Add domain</a>
+        <a href="/domains/bulk" class="border border-gray-300 text-sm px-3 py-1.5 rounded hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-800">Bulk import</a>
+        <a href="/domains/add" class="bg-gray-900 text-white text-sm px-3 py-1.5 rounded hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200">Add domain</a>
     </div>
 </div>
 
@@ -12,46 +12,46 @@
 <div class="overflow-x-auto">
 <table class="w-full text-sm border-collapse">
     <thead>
-        <tr class="border-b border-gray-200 text-left text-xs uppercase tracking-wide text-gray-500">
+        <tr class="border-b border-gray-200 text-left text-xs uppercase tracking-wide text-gray-500 dark:border-gray-700 dark:text-gray-400">
             <th class="py-2 pr-4 font-medium">
-                <a href="{{sortLink .Data.Sort .Data.Dir "name" "/domains"}}" class="hover:text-gray-900">
+                <a href="{{sortLink .Data.Sort .Data.Dir "name" "/domains"}}" class="hover:text-gray-900 dark:hover:text-gray-100">
                     Domain{{sortIndicator .Data.Sort .Data.Dir "name"}}
                 </a>
             </th>
             <th class="py-2 pr-4 font-medium">
-                <a href="{{sortLink .Data.Sort .Data.Dir "registrar" "/domains"}}" class="hover:text-gray-900">
+                <a href="{{sortLink .Data.Sort .Data.Dir "registrar" "/domains"}}" class="hover:text-gray-900 dark:hover:text-gray-100">
                     Registrar{{sortIndicator .Data.Sort .Data.Dir "registrar"}}
                 </a>
             </th>
             <th class="py-2 pr-4 font-medium">
-                <a href="{{sortLink .Data.Sort .Data.Dir "tags" "/domains"}}" class="hover:text-gray-900">
+                <a href="{{sortLink .Data.Sort .Data.Dir "tags" "/domains"}}" class="hover:text-gray-900 dark:hover:text-gray-100">
                     Tags{{sortIndicator .Data.Sort .Data.Dir "tags"}}
                 </a>
             </th>
             <th class="py-2 pr-4 font-medium">
-                <a href="{{sortLink .Data.Sort .Data.Dir "expiration_date" "/domains"}}" class="hover:text-gray-900">
+                <a href="{{sortLink .Data.Sort .Data.Dir "expiration_date" "/domains"}}" class="hover:text-gray-900 dark:hover:text-gray-100">
                     Expires{{sortIndicator .Data.Sort .Data.Dir "expiration_date"}}
                 </a>
             </th>
             <th class="py-2 pr-4 font-medium">
-                <a href="{{sortLink .Data.Sort .Data.Dir "auto_renewed" "/domains"}}" class="hover:text-gray-900">
+                <a href="{{sortLink .Data.Sort .Data.Dir "auto_renewed" "/domains"}}" class="hover:text-gray-900 dark:hover:text-gray-100">
                     Auto-renew{{sortIndicator .Data.Sort .Data.Dir "auto_renewed"}}
                 </a>
             </th>
             <th class="py-2 pr-4 font-medium text-right">
-                Cost / yr <span class="normal-case font-normal text-gray-400">({{.Data.DefaultCurrency}})</span>
+                Cost / yr <span class="normal-case font-normal text-gray-400 dark:text-gray-500">({{.Data.DefaultCurrency}})</span>
             </th>
             <th class="py-2 font-medium"></th>
         </tr>
     </thead>
-    <tbody class="divide-y divide-gray-100">
+    <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
         {{range .Data.Rows}}
-        <tr class="hover:bg-gray-50">
+        <tr>
             <td class="py-2 pr-4">
-                <a href="/domains/{{.Domain.ID}}" class="font-medium text-gray-900 hover:underline">{{.Domain.Name}}</a>{{if .Domain.Wishlisted}}<span class="ml-1" title="Wishlisted — tracking for expiry">⭐</span>{{end}}
+                <a href="/domains/{{.Domain.ID}}" class="font-medium text-gray-900 hover:underline dark:text-gray-100">{{.Domain.Name}}</a>{{if .Domain.Wishlisted}}<span class="ml-1" title="Wishlisted — tracking for expiry">⭐</span>{{end}}
             </td>
-            <td class="py-2 pr-4 text-gray-600">
-                {{if .Domain.Registrar}}<a href="/registrars/{{.Domain.Registrar.ID}}" class="hover:underline">{{.Domain.Registrar.Name}}</a>{{else}}<span class="text-gray-400">—</span>{{end}}
+            <td class="py-2 pr-4 text-gray-600 dark:text-gray-400">
+                {{if .Domain.Registrar}}<a href="/registrars/{{.Domain.Registrar.ID}}" class="hover:underline">{{.Domain.Registrar.Name}}</a>{{else}}<span class="text-gray-400 dark:text-gray-500">—</span>{{end}}
             </td>
             <td class="py-2 pr-4">
                 <div class="flex flex-wrap gap-1">
@@ -61,33 +61,33 @@
             <td class="py-2 pr-4">
                 {{if .Domain.ExpirationDate}}
                     {{$days := daysInt .Domain.ExpirationDate}}
-                    <span class="{{if lt $days 8}}text-red-600 font-medium{{else if lt $days 15}}text-orange-500 font-medium{{else if lt $days 31}}text-yellow-600{{else}}text-gray-700{{end}}">
+                    <span class="{{if lt $days 8}}text-red-600 font-medium{{else if lt $days 15}}text-orange-500 font-medium{{else if lt $days 31}}text-yellow-600{{else}}text-gray-700 dark:text-gray-300{{end}}">
                         {{formatDate .Domain.ExpirationDate}}
-                        <span class="text-xs text-gray-400">({{daysUntil .Domain.ExpirationDate}})</span>
+                        <span class="text-xs text-gray-400 dark:text-gray-500">({{daysUntil .Domain.ExpirationDate}})</span>
                     </span>
                 {{else}}
-                    <span class="text-gray-400">—</span>
+                    <span class="text-gray-400 dark:text-gray-500">—</span>
                 {{end}}
             </td>
             <td class="py-2 pr-4">
-                {{if .Domain.AutoRenewed}}<span class="text-green-600">Yes</span>{{else}}<span class="text-gray-400">No</span>{{end}}
+                {{if .Domain.AutoRenewed}}<span class="text-green-600 dark:text-green-400">Yes</span>{{else}}<span class="text-gray-400 dark:text-gray-500">No</span>{{end}}
             </td>
             <td class="py-2 pr-4 text-right tabular-nums">
                 {{if .YearlyCost}}
                     {{formatAmount (derefFloat .YearlyCost) .PriceCurrency}}
                 {{else}}
-                    <span class="text-gray-400">—</span>
+                    <span class="text-gray-400 dark:text-gray-500">—</span>
                 {{end}}
             </td>
             <td class="py-2 text-right">
-                <a href="/domains/{{.Domain.ID}}" class="text-xs text-gray-500 hover:text-gray-900">Edit</a>
+                <a href="/domains/{{.Domain.ID}}" class="text-xs text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">Edit</a>
             </td>
         </tr>
         {{end}}
     </tbody>
     <tfoot>
-        <tr class="border-t-2 border-gray-300">
-            <td colspan="5" class="py-2 pr-4 text-xs text-gray-500 uppercase tracking-wide">Total</td>
+        <tr class="border-t-2 border-gray-300 dark:border-gray-600">
+            <td colspan="5" class="py-2 pr-4 text-xs text-gray-500 uppercase tracking-wide dark:text-gray-400">Total</td>
             <td class="py-2 pr-4 text-right tabular-nums font-semibold">
                 {{formatAmount .Data.TotalYearlyCost .Data.DefaultCurrency}}
             </td>
@@ -97,9 +97,9 @@
 </table>
 </div>
 {{else}}
-<div class="text-center py-16 text-gray-400">
+<div class="text-center py-16 text-gray-400 dark:text-gray-500">
     <p class="mb-2">No domains yet.</p>
-    <a href="/domains/add" class="text-gray-600 underline text-sm">Add your first domain</a>
+    <a href="/domains/add" class="text-gray-600 underline text-sm dark:text-gray-400">Add your first domain</a>
 </div>
 {{end}}
 {{end}}

@@ -5,13 +5,13 @@
 .confirm-modal:target { display: flex; }
 
 .tag        { @apply inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium; }
-.tag-gray   { @apply bg-gray-100 text-gray-600; }
-.tag-red    { @apply bg-red-100 text-red-700; }
-.tag-orange { @apply bg-orange-100 text-orange-700; }
-.tag-yellow { @apply bg-yellow-100 text-yellow-700; }
-.tag-green  { @apply bg-green-100 text-green-700; }
-.tag-teal   { @apply bg-teal-100 text-teal-700; }
-.tag-blue   { @apply bg-blue-100 text-blue-700; }
-.tag-indigo { @apply bg-indigo-100 text-indigo-700; }
-.tag-purple { @apply bg-purple-100 text-purple-700; }
-.tag-pink   { @apply bg-pink-100 text-pink-700; }
+.tag-gray   { @apply bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300; }
+.tag-red    { @apply bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300; }
+.tag-orange { @apply bg-orange-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-300; }
+.tag-yellow { @apply bg-yellow-100 text-yellow-700 dark:bg-yellow-900/50 dark:text-yellow-300; }
+.tag-green  { @apply bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300; }
+.tag-teal   { @apply bg-teal-100 text-teal-700 dark:bg-teal-900/50 dark:text-teal-300; }
+.tag-blue   { @apply bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300; }
+.tag-indigo { @apply bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300; }
+.tag-purple { @apply bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300; }
+.tag-pink   { @apply bg-pink-100 text-pink-700 dark:bg-pink-900/50 dark:text-pink-300; }

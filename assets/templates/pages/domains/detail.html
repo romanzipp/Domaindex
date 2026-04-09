@@ -3,21 +3,21 @@
 <div class="max-w-2xl">
     <div class="flex items-center justify-between mb-6">
         <div class="flex items-center gap-3">
-            <a href="/domains" class="text-sm text-gray-500 hover:text-gray-900">← Domains</a>
+            <a href="/domains" class="text-sm text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">← Domains</a>
             <h1 class="text-xl font-semibold">{{.Data.Domain.Name}}</h1>
-            {{if .Data.Domain.Wishlisted}}<span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded">wishlist</span>{{end}}
+            {{if .Data.Domain.Wishlisted}}<span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded dark:bg-indigo-900/50 dark:text-indigo-300">wishlist</span>{{end}}
         </div>
-        <a href="#confirm-delete" class="text-xs text-red-600 hover:text-red-800 border border-red-200 px-2 py-1 rounded">Delete</a>
+        <a href="#confirm-delete" class="text-xs text-red-600 hover:text-red-800 border border-red-200 px-2 py-1 rounded dark:border-red-800 dark:hover:text-red-400">Delete</a>
     </div>
 
     {{/* Edit form */}}
-    <section class="border border-gray-200 rounded p-4 mb-6">
-        <h2 class="text-sm font-semibold mb-4 text-gray-700">Settings</h2>
+    <section class="border border-gray-200 rounded p-4 mb-6 dark:border-gray-700">
+        <h2 class="text-sm font-semibold mb-4 text-gray-700 dark:text-gray-300">Settings</h2>
         <form method="POST" action="/domains/{{.Data.Domain.ID}}" class="space-y-3">
             <div>
-                <label class="block text-sm font-medium mb-1">Registrar{{if .Data.Domain.Registrar}} <a href="/registrars/{{.Data.Domain.Registrar.ID}}" class="text-xs font-normal text-gray-400 hover:text-gray-600" title="Open registrar">↗</a>{{end}}</label>
+                <label class="block text-sm font-medium mb-1">Registrar{{if .Data.Domain.Registrar}} <a href="/registrars/{{.Data.Domain.Registrar.ID}}" class="text-xs font-normal text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300" title="Open registrar">↗</a>{{end}}</label>
                 <select name="registrar_id"
-                    class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500">
+                    class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
                     <option value="0"{{if not .Data.Domain.RegistrarID}} selected{{end}}>— None —</option>
                     {{range .Data.Registrars}}
                     <option value="{{.ID}}"{{if and $.Data.Domain.RegistrarID (eq (derefUint $.Data.Domain.RegistrarID) .ID)}} selected{{end}}>{{.Name}}</option>
@@ -34,13 +34,13 @@
                     Wishlisted
                 </label>
             </div>
-            <button type="submit" class="bg-gray-900 text-white text-sm px-4 py-1.5 rounded hover:bg-gray-700">Save</button>
+            <button type="submit" class="bg-gray-900 text-white text-sm px-4 py-1.5 rounded hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200">Save</button>
         </form>
     </section>
 
     {{/* Tags */}}
-    <section class="border border-gray-200 rounded p-4 mb-6">
-        <h2 class="text-sm font-semibold mb-3 text-gray-700">Tags</h2>
+    <section class="border border-gray-200 rounded p-4 mb-6 dark:border-gray-700">
+        <h2 class="text-sm font-semibold mb-3 text-gray-700 dark:text-gray-300">Tags</h2>
 
         {{/* Attached tags */}}
         {{if .Data.Domain.Tags}}
@@ -58,13 +58,13 @@
 
         {{/* Attach existing or create new */}}
         <details class="text-sm">
-            <summary class="text-xs text-gray-500 cursor-pointer hover:text-gray-700 select-none w-fit">Add tag</summary>
+            <summary class="text-xs text-gray-500 cursor-pointer hover:text-gray-700 select-none w-fit dark:text-gray-400 dark:hover:text-gray-200">Add tag</summary>
             <div class="mt-3 space-y-4">
 
                 {{/* Attach existing */}}
                 {{if .Data.AvailableTags}}
                 <div>
-                    <p class="text-xs text-gray-500 mb-2">Your tags</p>
+                    <p class="text-xs text-gray-500 mb-2 dark:text-gray-400">Your tags</p>
                     <div class="flex flex-wrap gap-1.5">
                         {{range .Data.AvailableTags}}
                         <div class="flex items-center gap-1">
@@ -73,7 +73,7 @@
                                 <button type="submit" class="tag tag-{{.Color}} hover:opacity-80">+ {{.Name}}</button>
                             </form>
                             <form method="POST" action="/tags/{{.ID}}/delete" class="contents">
-                                <button type="submit" class="text-xs text-gray-300 hover:text-red-500" title="Delete tag globally">×</button>
+                                <button type="submit" class="text-xs text-gray-300 hover:text-red-500 dark:text-gray-600 dark:hover:text-red-400" title="Delete tag globally">×</button>
                             </form>
                         </div>
                         {{end}}
@@ -83,19 +83,19 @@
 
                 {{/* Create new tag */}}
                 <div>
-                    <p class="text-xs text-gray-500 mb-2">Create new</p>
+                    <p class="text-xs text-gray-500 mb-2 dark:text-gray-400">Create new</p>
                     <form method="POST" action="/domains/{{.Data.Domain.ID}}/tags" class="flex items-center gap-2 flex-wrap">
                         <input type="text" name="name" placeholder="Tag name" required
-                            class="border border-gray-300 rounded px-2 py-1 text-xs focus:outline-none focus:border-gray-500 w-32">
+                            class="border border-gray-300 rounded px-2 py-1 text-xs focus:outline-none focus:border-gray-500 w-32 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
                         <div class="flex gap-1.5 items-center" title="Color">
                             {{range $i, $c := .Data.TagColors}}
                             <label class="cursor-pointer" title="{{$c}}">
                                 <input type="radio" name="color" value="{{$c}}" class="sr-only peer"{{if eq $i 0}} checked{{end}}>
-                                <span class="block w-4 h-4 rounded-full tag-{{$c}} peer-checked:ring-2 peer-checked:ring-offset-1 peer-checked:ring-gray-600"></span>
+                                <span class="block w-4 h-4 rounded-full tag-{{$c}} peer-checked:ring-2 peer-checked:ring-offset-1 peer-checked:ring-gray-600 dark:peer-checked:ring-gray-400 dark:peer-checked:ring-offset-gray-800"></span>
                             </label>
                             {{end}}
                         </div>
-                        <button type="submit" class="text-xs bg-gray-900 text-white px-3 py-1 rounded hover:bg-gray-700">Create &amp; attach</button>
+                        <button type="submit" class="text-xs bg-gray-900 text-white px-3 py-1 rounded hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200">Create &amp; attach</button>
                     </form>
                 </div>
 
@@ -104,66 +104,66 @@
     </section>
 
     {{/* WHOIS info */}}
-    <section class="border border-gray-200 rounded p-4 mb-6">
+    <section class="border border-gray-200 rounded p-4 mb-6 dark:border-gray-700">
         <div class="flex items-center justify-between mb-3">
-            <h2 class="text-sm font-semibold text-gray-700">WHOIS info</h2>
+            <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300">WHOIS info</h2>
             <form method="POST" action="/domains/{{.Data.Domain.ID}}/refresh">
-                <button type="submit" class="text-xs border border-gray-300 px-2 py-1 rounded hover:bg-gray-100">Refresh</button>
+                <button type="submit" class="text-xs border border-gray-300 px-2 py-1 rounded hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700">Refresh</button>
             </form>
         </div>
         <dl class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-            <dt class="text-gray-500">Registrar</dt>
-            <dd>{{if .Data.Domain.Registrar}}{{.Data.Domain.Registrar.Name}}{{else}}<span class="text-gray-400">—</span>{{end}}</dd>
+            <dt class="text-gray-500 dark:text-gray-400">Registrar</dt>
+            <dd>{{if .Data.Domain.Registrar}}{{.Data.Domain.Registrar.Name}}{{else}}<span class="text-gray-400 dark:text-gray-500">—</span>{{end}}</dd>
 
-            <dt class="text-gray-500">Created</dt>
+            <dt class="text-gray-500 dark:text-gray-400">Created</dt>
             <dd>{{formatDate .Data.Domain.CreatedDate}}</dd>
 
-            <dt class="text-gray-500">Updated</dt>
+            <dt class="text-gray-500 dark:text-gray-400">Updated</dt>
             <dd>{{formatDate .Data.Domain.UpdatedDate}}</dd>
 
-            <dt class="text-gray-500">Expires</dt>
+            <dt class="text-gray-500 dark:text-gray-400">Expires</dt>
             <dd>
                 {{if .Data.Domain.ExpirationDate}}
                     {{formatDate .Data.Domain.ExpirationDate}}
-                    <span class="text-gray-400 text-xs">({{daysUntil .Data.Domain.ExpirationDate}})</span>
+                    <span class="text-gray-400 text-xs dark:text-gray-500">({{daysUntil .Data.Domain.ExpirationDate}})</span>
                 {{else}}
-                    <span class="text-gray-400">—</span>
+                    <span class="text-gray-400 dark:text-gray-500">—</span>
                 {{end}}
             </dd>
 
-            <dt class="text-gray-500">DNSSEC</dt>
+            <dt class="text-gray-500 dark:text-gray-400">DNSSEC</dt>
             <dd>{{if .Data.Domain.DNSSec}}Yes{{else}}No{{end}}</dd>
 
-            <dt class="text-gray-500">Name servers</dt>
+            <dt class="text-gray-500 dark:text-gray-400">Name servers</dt>
             <dd class="text-xs font-mono">
                 {{$ns := .Data.Domain.NameServers}}
-                {{if $ns}}{{range $ns}}{{.}}<br>{{end}}{{else}}<span class="text-gray-400">—</span>{{end}}
+                {{if $ns}}{{range $ns}}{{.}}<br>{{end}}{{else}}<span class="text-gray-400 dark:text-gray-500">—</span>{{end}}
             </dd>
 
-            <dt class="text-gray-500">Status</dt>
+            <dt class="text-gray-500 dark:text-gray-400">Status</dt>
             <dd class="text-xs">
                 {{$st := .Data.Domain.Statuses}}
-                {{if $st}}{{range $st}}{{.}}<br>{{end}}{{else}}<span class="text-gray-400">—</span>{{end}}
+                {{if $st}}{{range $st}}{{.}}<br>{{end}}{{else}}<span class="text-gray-400 dark:text-gray-500">—</span>{{end}}
             </dd>
 
-            <dt class="text-gray-500">Last fetched</dt>
+            <dt class="text-gray-500 dark:text-gray-400">Last fetched</dt>
             <dd>{{formatDate .Data.Domain.WhoisFetchedAt}}</dd>
         </dl>
     </section>
 
     {{/* Price override */}}
-    <section class="border border-gray-200 rounded p-4">
+    <section class="border border-gray-200 rounded p-4 dark:border-gray-700">
         <div class="flex items-center justify-between mb-3">
-            <h2 class="text-sm font-semibold text-gray-700">Price override</h2>
+            <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Price override</h2>
             {{if .Data.Price}}
-            <span class="text-xs text-gray-500">
+            <span class="text-xs text-gray-500 dark:text-gray-400">
                 {{if .Data.Price.DomainID}}Custom{{else}}From registrar{{end}}
             </span>
             {{end}}
         </div>
 
         {{if and .Data.Price .Data.Price.DomainID}}
-        <div class="mb-3 text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded">
+        <div class="mb-3 text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded dark:bg-gray-800 dark:text-gray-400">
             Override active — these prices take precedence over the registrar default.
         </div>
         {{end}}
@@ -172,57 +172,57 @@
             <div class="grid grid-cols-2 gap-3 text-sm">
                 {{$p := .Data.Price}}
                 <div>
-                    <label class="block text-xs font-medium mb-1 text-gray-600">Initial / yr</label>
+                    <label class="block text-xs font-medium mb-1 text-gray-600 dark:text-gray-400">Initial / yr</label>
                     <input type="number" step="0.01" min="0" name="initial_per_year"
                         value="{{if $p}}{{printf "%.2f" $p.InitialPerYear}}{{end}}"
-                        class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-gray-500">
+                        class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium mb-1 text-gray-600">Renew / yr</label>
+                    <label class="block text-xs font-medium mb-1 text-gray-600 dark:text-gray-400">Renew / yr</label>
                     <input type="number" step="0.01" min="0" name="renew_per_year"
                         value="{{if $p}}{{printf "%.2f" $p.RenewPerYear}}{{end}}"
-                        class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-gray-500">
+                        class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium mb-1 text-gray-600">Transfer (one-time)</label>
+                    <label class="block text-xs font-medium mb-1 text-gray-600 dark:text-gray-400">Transfer (one-time)</label>
                     <input type="number" step="0.01" min="0" name="transfer"
                         value="{{if $p}}{{printf "%.2f" $p.Transfer}}{{end}}"
-                        class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-gray-500">
+                        class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium mb-1 text-gray-600">Privacy / yr</label>
+                    <label class="block text-xs font-medium mb-1 text-gray-600 dark:text-gray-400">Privacy / yr</label>
                     <input type="number" step="0.01" min="0" name="privacy_per_year"
                         value="{{if $p}}{{printf "%.2f" $p.PrivacyPerYear}}{{end}}"
-                        class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-gray-500">
+                        class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium mb-1 text-gray-600">Misc / yr</label>
+                    <label class="block text-xs font-medium mb-1 text-gray-600 dark:text-gray-400">Misc / yr</label>
                     <input type="number" step="0.01" min="0" name="misc_per_year"
                         value="{{if $p}}{{printf "%.2f" $p.MiscPerYear}}{{end}}"
-                        class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-gray-500">
+                        class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-400">
                 </div>
             </div>
             <div class="flex gap-2">
-                <button type="submit" class="bg-gray-900 text-white text-sm px-4 py-1.5 rounded hover:bg-gray-700">Save override</button>
+                <button type="submit" class="bg-gray-900 text-white text-sm px-4 py-1.5 rounded hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200">Save override</button>
             </div>
         </form>
 
         {{if and .Data.Price .Data.Price.DomainID}}
         <form method="POST" action="/domains/{{.Data.Domain.ID}}/price/delete" class="mt-2">
-            <button type="submit" class="border border-gray-300 text-sm px-4 py-1.5 rounded hover:bg-gray-100 text-gray-600">Remove override</button>
+            <button type="submit" class="border border-gray-300 text-sm px-4 py-1.5 rounded hover:bg-gray-100 text-gray-600 dark:border-gray-600 dark:hover:bg-gray-700 dark:text-gray-400">Remove override</button>
         </form>
         {{end}}
     </section>
 </div>
 
 <div id="confirm-delete" class="confirm-modal fixed inset-0 bg-black/40 items-center justify-center z-50">
-    <div class="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full mx-4">
+    <div class="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full mx-4 dark:bg-gray-800">
         <h2 class="text-base font-semibold mb-1">Delete domain?</h2>
-        <p class="text-sm text-gray-500 mb-5">
-            <strong class="text-gray-800">{{.Data.Domain.Name}}</strong> and all associated data will be permanently removed.
+        <p class="text-sm text-gray-500 mb-5 dark:text-gray-400">
+            <strong class="text-gray-800 dark:text-gray-200">{{.Data.Domain.Name}}</strong> and all associated data will be permanently removed.
         </p>
         <div class="flex gap-2 justify-end">
-            <a href="/domains/{{.Data.Domain.ID}}" class="text-sm border border-gray-300 px-4 py-1.5 rounded hover:bg-gray-100 text-gray-600">Cancel</a>
+            <a href="/domains/{{.Data.Domain.ID}}" class="text-sm border border-gray-300 px-4 py-1.5 rounded hover:bg-gray-100 text-gray-600 dark:border-gray-600 dark:hover:bg-gray-700 dark:text-gray-400">Cancel</a>
             <form method="POST" action="/domains/{{.Data.Domain.ID}}/delete">
                 <button type="submit" class="text-sm bg-red-600 text-white px-4 py-1.5 rounded hover:bg-red-700">Delete</button>
             </form>
