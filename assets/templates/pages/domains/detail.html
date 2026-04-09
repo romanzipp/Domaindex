@@ -152,7 +152,7 @@
     {{/* Price override */}}
     <section class="card">
         <div class="flex items-center justify-between mb-3">
-            <h2 class="section-title">Price override</h2>
+            <h2 class="section-title">Price override{{if .Data.Domain.Registrar}} <span class="font-normal text-gray-400 dark:text-gray-500">({{.Data.Domain.Registrar.Currency}})</span>{{end}}</h2>
             {{if .Data.Price}}
             <span class="text-xs text-gray-500 dark:text-gray-400">
                 {{if .Data.Price.DomainID}}Custom{{else}}From registrar{{end}}

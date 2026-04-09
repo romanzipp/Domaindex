@@ -39,7 +39,7 @@
     </section>
 
     <section class="card">
-        <h2 class="section-title mb-4">Default prices per TLD</h2>
+        <h2 class="section-title mb-4">Default prices per TLD <span class="font-normal text-gray-400 dark:text-gray-500">({{.Data.Registrar.Currency}})</span></h2>
         <p class="text-xs text-gray-500 mb-4 dark:text-gray-400">Leave TLD empty for a catch-all default applied to all domains at this registrar.</p>
 
         {{if .Data.Prices}}
