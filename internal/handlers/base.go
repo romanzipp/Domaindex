@@ -16,16 +16,18 @@ type Base struct {
 	store               *sessions.CookieStore
 	templateFS          fs.FS
 	RegistrationEnabled bool
+	assetVersion        string
 }
 
-func NewBase(db *gorm.DB, store *sessions.CookieStore, templateFS fs.FS, registrationEnabled bool) *Base {
-	return &Base{db: db, store: store, templateFS: templateFS, RegistrationEnabled: registrationEnabled}
+func NewBase(db *gorm.DB, store *sessions.CookieStore, templateFS fs.FS, registrationEnabled bool, assetVersion string) *Base {
+	return &Base{db: db, store: store, templateFS: templateFS, RegistrationEnabled: registrationEnabled, assetVersion: assetVersion}
 }
 
 const AppName = "Domaindex"
 
 type PageData struct {
 	AppName      string
+	AssetVersion string
 	User         *models.User
 	Data         any
 	FlashSuccess []string
@@ -47,6 +49,7 @@ func (b *Base) render(w http.ResponseWriter, r *http.Request, page string, data 
 	user := middleware.UserFromContext(r.Context())
 	pd := PageData{
 		AppName:      AppName,
+		AssetVersion: b.assetVersion,
 		User:         user,
 		Data:         data,
 		FlashSuccess: getFlash(w, r, b.store, "success"),

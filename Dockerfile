@@ -25,7 +25,8 @@ RUN go mod download
 COPY . .
 COPY --from=css /build/assets/static/css/tailwind.css ./assets/static/css/tailwind.css
 
-RUN CGO_ENABLED=1 GOOS=linux go build -ldflags="-w -s" -o /domaindex ./cmd/server
+ARG VERSION
+RUN CGO_ENABLED=1 GOOS=linux go build -ldflags="-w -s -X main.version=${VERSION}" -o /domaindex ./cmd/server
 
 # -----------------------------------
 FROM alpine:3.21

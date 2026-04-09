@@ -17,6 +17,10 @@ import (
 	"github.com/romanzipp/domaindex/internal/services"
 )
 
+// version is injected at build time via -ldflags "-X main.version=x.y.z".
+// It is empty in development builds.
+var version string
+
 func main() {
 	cfg := config.Load()
 
@@ -43,7 +47,7 @@ func main() {
 		log.Fatalf("static fs: %v", err)
 	}
 
-	base := handlers.NewBase(database, store, templateSub, cfg.RegistrationEnabled)
+	base := handlers.NewBase(database, store, templateSub, cfg.RegistrationEnabled, version)
 
 	whoisSvc := services.NewWhoisService(database)
 	priceSvc := services.NewPriceService(database)
@@ -63,7 +67,8 @@ func main() {
 
 	r := mux.NewRouter()
 
-	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.FS(staticSub))))
+	staticHandler := http.StripPrefix("/static/", http.FileServer(http.FS(staticSub)))
+	r.PathPrefix("/static/").Handler(staticCacheHandler(staticHandler, version))
 
 	r.Handle("/login", auth.Load(http.HandlerFunc(base.ShowLogin))).Methods("GET")
 	r.Handle("/login", auth.Load(http.HandlerFunc(base.Login))).Methods("POST")
@@ -113,4 +118,15 @@ func main() {
 	if err := http.ListenAndServe(addr, r); err != nil {
 		log.Fatalf("server: %v", err)
 	}
+}
+
+// staticCacheHandler adds long-lived cache headers when a version is set (production).
+// In dev (version == ""), no cache headers are added so asset changes are picked up immediately.
+func staticCacheHandler(h http.Handler, version string) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if version != "" {
+			w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+		}
+		h.ServeHTTP(w, r)
+	})
 }
