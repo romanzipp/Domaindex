@@ -23,7 +23,11 @@
                     Registrar{{sortIndicator .Data.Sort .Data.Dir "registrar"}}
                 </a>
             </th>
-            <th class="py-2 pr-4 font-medium">Tags</th>
+            <th class="py-2 pr-4 font-medium">
+                <a href="{{sortLink .Data.Sort .Data.Dir "tags" "/domains"}}" class="hover:text-gray-900">
+                    Tags{{sortIndicator .Data.Sort .Data.Dir "tags"}}
+                </a>
+            </th>
             <th class="py-2 pr-4 font-medium">
                 <a href="{{sortLink .Data.Sort .Data.Dir "expiration_date" "/domains"}}" class="hover:text-gray-900">
                     Expires{{sortIndicator .Data.Sort .Data.Dir "expiration_date"}}

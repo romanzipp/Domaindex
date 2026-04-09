@@ -54,6 +54,7 @@ func (h *DomainsHandler) List(w http.ResponseWriter, r *http.Request) {
 		"auto_renewed":    "domains.auto_renewed",
 		"wishlisted":      "domains.wishlisted",
 		"created_at":      "domains.created_at",
+		"tags":            "_tag_sort.first_tag",
 	}
 
 	orderCol, ok := allowedSorts[sort]
@@ -64,8 +65,19 @@ func (h *DomainsHandler) List(w http.ResponseWriter, r *http.Request) {
 
 	var domains []models.Domain
 	q := h.db.Preload("Tags").Joins("Registrar").
-		Where("domains.user_id = ?", user.ID).
-		Order(orderCol + " " + dir)
+		Where("domains.user_id = ?", user.ID)
+
+	if sort == "tags" {
+		q = q.Joins(`LEFT JOIN (
+			SELECT domain_id, MIN(tags.name) AS first_tag
+			FROM domain_tags
+			JOIN tags ON tags.id = domain_tags.tag_id
+			GROUP BY domain_id
+		) _tag_sort ON _tag_sort.domain_id = domains.id`).
+			Order(orderCol + " " + dir + " NULLS LAST")
+	} else {
+		q = q.Order(orderCol + " " + dir)
+	}
 
 	if err := q.Find(&domains).Error; err != nil {
 		http.Error(w, "db error", http.StatusInternalServerError)
