@@ -22,7 +22,7 @@ Self-hosted domain manager, all of your countless domains (*sure, you will finis
 
 ## Deployment
 
-See example [Docker compose.yml](/compose.yaml)
+See example [Docker compose.yml](/compose.yml)
 
 ```bash
 docker run -d \
@@ -37,28 +37,28 @@ docker run -d \
 
 ## Configuration
 
-- APP_HOST=0.0.0.0
-- APP_PORT=8080
-- APP_SECRET=change-me-to-a-random-secret
-- WHOIS_REFRESH_INTERVAL=6h # How often to refresh WHOIS data in the background (e.g. 6h, 30m)
-- REGISTRATION_ENABLED=true # Set to false to disable new user registration
+- `APP_HOST` - Listen host (default: `0.0.0.0`)
+- `APP_PORT` - Listen port (default: `8080`)
+- `APP_SECRET` - Session cookie secret, generate a random secret by running `openssl rand -hex 32`
+- `WHOIS_REFRESH_INTERVAL` - How often to refresh WHOIS data in the background (default: `6h`)
+- `REGISTRATION_ENABLED` - Allow new user registration (default: `true`)
 
 ### Database
 
-#### sqlite (default)
+#### SQLite (default)
 
-- DB_DRIVER=sqlite
-- DB_DSN=data/domaindex.db
+- `DB_DRIVER` - `sqlite`
+- `DB_DSN` - Database file path (default: `data/domaindex.db`)
 
 #### PostgreSQL
 
-- DB_DRIVER=postgres
-- DB_DSN=host=db user=domain_manager password=secret dbname=domain_manager port=5432 sslmode=disable
+- `DB_DRIVER` - `postgres`
+- `DB_DSN` - Connection string (default: `host=db user=domaindex password=secret dbname=domaindex port=5432 sslmode=disable`)
 
 ### Apprise (Notifications)
 
-- APPRISE_URL=<http://apprise:8000>
-- APPRISE_KEY=
+- `APPRISE_URL` - Apprise gateway URL
+- `APPRISE_KEY` - Apprise key
 
 ## Details
 
