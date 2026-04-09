@@ -1,18 +1,72 @@
 # Domain Manager
 
-Self-hosted domain manager.
+Self-hosted domain manager, all of your countless domains (*sure, you will finish that side-project*) in one place.
 
-## Default Registrars & Prices
+## Features
 
-The app comes with a set of default registrars (25 most popular) and default pricing which was fetched around April 9, 2026 the last time.
+- Add domains, bulk import from list
+- Automatically fetches WHOIS information, incl. expiry date and registrar information
+- Wishlist domains
+- Get notified about soon to expire domains ([Apprise](https://github.com/caronc/apprise) integration)
+- Built-in list of most popular registrars + prices for TLDs
+- Flexible price-management, set per registrar prices, custom overrides, prices initial costs, yearly renewals, transfers, privacy add-ons etc.
+- Multi-user application
+- Single Docker image for easy deployment
+- **No JavaScript** across the whole application
 
-### Find Registrar pricing
+### Planed Features
+
+- [ ] SSL check
+- [ ] Domain A/AAAA host information (ASN, country, ...)
+
+## Deployment
+
+See example [Docker compose.yaml](/compose.yaml)
+
+```bash
+docker
+```
+
+## Configuration
+
+- APP_HOST=0.0.0.0
+- APP_PORT=8080
+- APP_SECRET=change-me-to-a-random-secret
+- WHOIS_REFRESH_INTERVAL=6h # How often to refresh WHOIS data in the background (e.g. 6h, 30m)
+- REGISTRATION_ENABLED=true # Set to false to disable new user registration
+
+### Database
+
+#### sqlite (default)
+
+- DB_DRIVER=sqlite
+- DB_DSN=data/domain-manager.db
+
+#### PostgreSQL
+
+- DB_DRIVER=postgres
+- DB_DSN=host=db user=domain_manager password=secret dbname=domain_manager port=5432 sslmode=disable
+
+### Apprise (Notifications)
+
+- APPRISE_URL=<http://apprise:8000>
+- APPRISE_KEY=
+
+## Details
+
+### Default Registrars & Prices
+
+The app comes with a set of default registrars (25 most popular) and default pricing which was fetched around April 2026 for the last time. You are free to update those default prices or set overrides for a single domain.
+
+### Registrar Pricing
+
+Information about domain pricing has been fetched from the following sources and are included in `.csv` seed files.
 
 - `1910` Cloudflare: [cfdomainpricing JSON](https://cfdomainpricing.com/prices.json)
 
 ## Authors
 
-- Roman Zipp
+- [Roman Zipp](https://romanzipp.com)
 
 ## License
 
