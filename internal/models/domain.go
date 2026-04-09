@@ -7,11 +7,11 @@ import (
 
 type Domain struct {
 	ID             uint       `gorm:"primarykey"`
-	UserID         uint       `gorm:"not null;index"`
+	UserID         uint       `gorm:"not null;index;uniqueIndex:idx_user_domain"`
 	User           User       `gorm:"foreignKey:UserID"`
 	RegistrarID    *uint      `gorm:"index"`
 	Registrar      *Registrar `gorm:"foreignKey:RegistrarID"`
-	Name           string     `gorm:"not null"`
+	Name           string     `gorm:"not null;uniqueIndex:idx_user_domain"`
 	TLD            string     `gorm:"not null"`
 	AutoRenewed    bool       `gorm:"default:false"`
 	Wishlisted     bool       `gorm:"default:false"`
