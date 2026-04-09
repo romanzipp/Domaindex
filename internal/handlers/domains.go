@@ -106,7 +106,7 @@ func (h *DomainsHandler) List(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var registrars []models.Registrar
-	h.db.Where("user_id = ?", user.ID).Find(&registrars)
+	h.db.Where("user_id = ?", user.ID).Order("name").Find(&registrars)
 
 	h.render(w, r, "domains/list.html", DomainsListData{
 		Rows:            rows,
@@ -121,7 +121,7 @@ func (h *DomainsHandler) List(w http.ResponseWriter, r *http.Request) {
 func (h *DomainsHandler) ShowAdd(w http.ResponseWriter, r *http.Request) {
 	user := middleware.UserFromContext(r.Context())
 	var registrars []models.Registrar
-	h.db.Where("user_id = ?", user.ID).Find(&registrars)
+	h.db.Where("user_id = ?", user.ID).Order("name").Find(&registrars)
 	h.render(w, r, "domains/add.html", map[string]any{"Registrars": registrars}, "registrars/_fields.html")
 }
 
@@ -146,7 +146,7 @@ func (h *DomainsHandler) Add(w http.ResponseWriter, r *http.Request) {
 func (h *DomainsHandler) ShowBulk(w http.ResponseWriter, r *http.Request) {
 	user := middleware.UserFromContext(r.Context())
 	var registrars []models.Registrar
-	h.db.Where("user_id = ?", user.ID).Find(&registrars)
+	h.db.Where("user_id = ?", user.ID).Order("name").Find(&registrars)
 	h.render(w, r, "domains/bulk.html", map[string]any{"Registrars": registrars}, "registrars/_fields.html")
 }
 
@@ -203,7 +203,7 @@ func (h *DomainsHandler) Show(w http.ResponseWriter, r *http.Request) {
 
 	var registrars []models.Registrar
 	user := middleware.UserFromContext(r.Context())
-	h.db.Where("user_id = ?", user.ID).Find(&registrars)
+	h.db.Where("user_id = ?", user.ID).Order("name").Find(&registrars)
 
 	h.render(w, r, "domains/detail.html", map[string]any{
 		"Domain":     domain,

@@ -21,7 +21,7 @@ func NewRegistrarsHandler(base *Base) *RegistrarsHandler {
 func (h *RegistrarsHandler) List(w http.ResponseWriter, r *http.Request) {
 	user := middleware.UserFromContext(r.Context())
 	var registrars []models.Registrar
-	h.db.Preload("Prices").Where("user_id = ?", user.ID).Find(&registrars)
+	h.db.Preload("Prices").Where("user_id = ?", user.ID).Order("name").Find(&registrars)
 	h.render(w, r, "registrars/list.html", registrars)
 }
 
