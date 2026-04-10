@@ -3,10 +3,10 @@
 <div class="max-w-2xl">
     <div class="flex items-center justify-between mb-6">
         <div class="flex items-center gap-3">
-            <a href="/registrars" class="text-sm text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">← Registrars</a>
-            <h1 class="text-xl font-semibold">{{.Data.Registrar.Name}}</h1>
+            <a href="/registrars" class="back-link">← Registrars</a>
+            <h1 class="page-title">{{.Data.Registrar.Name}}</h1>
         </div>
-        <a href="#confirm-delete" class="text-xs text-red-600 hover:text-red-800 border border-red-200 px-2 py-1 rounded dark:border-red-800 dark:hover:text-red-400">Delete</a>
+        <a href="#confirm-delete" class="btn-delete">Delete</a>
     </div>
 
     <section class="card mb-6">
@@ -119,7 +119,7 @@
         <div class="flex gap-2 justify-end">
             <a href="/registrars/{{.Data.Registrar.ID}}" class="btn-secondary px-4 py-1.5">Cancel</a>
             <form method="POST" action="/registrars/{{.Data.Registrar.ID}}/delete">
-                <button type="submit" class="text-sm bg-red-600 text-white px-4 py-1.5 rounded hover:bg-red-700">Delete</button>
+                <button type="submit" class="btn-danger px-4 py-1.5">Delete</button>
             </form>
         </div>
     </div>

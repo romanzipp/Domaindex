@@ -2,11 +2,11 @@
 {{define "content"}}
 <div class="flex items-center justify-between mb-6">
     <div class="flex items-center gap-3">
-        <a href="/domains" class="text-sm text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">← Domains</a>
-        <h1 class="text-xl font-semibold">{{.Data.Domain.Name}}</h1>
+        <a href="/domains" class="back-link">← Domains</a>
+        <h1 class="page-title">{{.Data.Domain.Name}}</h1>
         {{if .Data.Domain.Wishlisted}}<span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded dark:bg-indigo-900/50 dark:text-indigo-300">wishlist</span>{{end}}
     </div>
-    <a href="#confirm-delete" class="text-xs text-red-600 hover:text-red-800 border border-red-200 px-2 py-1 rounded dark:border-red-800 dark:hover:text-red-400">Delete</a>
+    <a href="#confirm-delete" class="btn-delete">Delete</a>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
@@ -301,7 +301,7 @@
         <div class="flex gap-2 justify-end">
             <a href="/domains/{{.Data.Domain.ID}}" class="btn-secondary px-4 py-1.5">Cancel</a>
             <form method="POST" action="/domains/{{.Data.Domain.ID}}/delete">
-                <button type="submit" class="text-sm bg-red-600 text-white px-4 py-1.5 rounded hover:bg-red-700">Delete</button>
+                <button type="submit" class="btn-danger px-4 py-1.5">Delete</button>
             </form>
         </div>
     </div>
