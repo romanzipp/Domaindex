@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"slices"
 	"strings"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/romanzipp/domaindex/internal/middleware"
@@ -295,7 +296,15 @@ func (h *DomainsHandler) Update(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if err := h.db.Model(domain).Select("RegistrarID", "AutoRenewed", "Wishlisted").Save(domain).Error; err != nil {
+	if dateStr := r.FormValue("expiration_date"); dateStr != "" {
+		if t, err := time.Parse("2006-01-02", dateStr); err == nil {
+			domain.ExpirationDate = &t
+		}
+	} else {
+		domain.ExpirationDate = nil
+	}
+
+	if err := h.db.Model(domain).Select("RegistrarID", "AutoRenewed", "Wishlisted", "ExpirationDate").Save(domain).Error; err != nil {
 		h.flashError(w, r, "Failed to update domain")
 	} else {
 		h.flashSuccess(w, r, "Domain updated")

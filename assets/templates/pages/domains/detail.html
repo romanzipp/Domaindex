@@ -23,6 +23,12 @@
                     {{end}}
                 </select>
             </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Expiration date</label>
+                <input type="date" name="expiration_date"
+                    value="{{if .Data.Domain.ExpirationDate}}{{formatDate .Data.Domain.ExpirationDate}}{{end}}"
+                    class="input w-48">
+            </div>
             <div class="flex gap-6">
                 <label class="flex items-center gap-2 text-sm">
                     <input type="checkbox" name="auto_renewed"{{if .Data.Domain.AutoRenewed}} checked{{end}} class="rounded">
