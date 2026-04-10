@@ -2,6 +2,9 @@
 
 Self-hosted domain manager, all of your countless domains (*sure, you will finish that side-project*) in one place. (Domain + Index = Domaindex)
 
+![Domaindex](art/01-light.png#gh-light-mode-only)
+![Domaindex](art/01-dark.png#gh-dark-mode-only)
+
 ## Features
 
 - Add domains, bulk import from list
