@@ -13,15 +13,17 @@ import (
 type Worker struct {
 	db           *gorm.DB
 	whois        *services.WhoisService
+	tech         *services.TechService
 	notification *services.NotificationService
 	interval     time.Duration
 	trigger      chan struct{}
 }
 
-func NewWorker(db *gorm.DB, whois *services.WhoisService, notification *services.NotificationService, interval time.Duration) *Worker {
+func NewWorker(db *gorm.DB, whois *services.WhoisService, tech *services.TechService, notification *services.NotificationService, interval time.Duration) *Worker {
 	return &Worker{
 		db:           db,
 		whois:        whois,
+		tech:         tech,
 		notification: notification,
 		interval:     interval,
 		trigger:      make(chan struct{}, 1),
@@ -61,6 +63,37 @@ func (w *Worker) tick() {
 	if err := w.checkExpiries(); err != nil {
 		log.Printf("expiry check error: %v", err)
 	}
+	if err := w.refreshTech(); err != nil {
+		log.Printf("tech refresh error: %v", err)
+	}
+}
+
+func (w *Worker) refreshTech() error {
+	var users []models.User
+	if err := w.db.Where("tech_info_enabled = ?", true).Find(&users).Error; err != nil {
+		return err
+	}
+
+	for _, user := range users {
+		var domains []models.Domain
+		if err := w.db.Where("user_id = ? AND tech_info_enabled = ?", user.ID, true).Find(&domains).Error; err != nil {
+			log.Printf("tech refresh: load domains for user %d: %v", user.ID, err)
+			continue
+		}
+
+		for i := range domains {
+			d := &domains[i]
+			if err := w.tech.UpdateDomain(d); err != nil {
+				log.Printf("tech fetch failed for %s: %v", d.Name, err)
+				continue
+			}
+			if err := w.db.Save(d).Error; err != nil {
+				log.Printf("save domain tech %s: %v", d.Name, err)
+			}
+		}
+	}
+
+	return nil
 }
 
 func (w *Worker) refreshWhois() error {

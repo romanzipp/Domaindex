@@ -20,13 +20,14 @@ type WorkerTrigger interface {
 type DomainsHandler struct {
 	*Base
 	whois    *services.WhoisService
+	tech     *services.TechService
 	price    *services.PriceService
 	currency *services.CurrencyService
 	worker   WorkerTrigger
 }
 
-func NewDomainsHandler(base *Base, whois *services.WhoisService, price *services.PriceService, currency *services.CurrencyService, worker WorkerTrigger) *DomainsHandler {
-	return &DomainsHandler{Base: base, whois: whois, price: price, currency: currency, worker: worker}
+func NewDomainsHandler(base *Base, whois *services.WhoisService, tech *services.TechService, price *services.PriceService, currency *services.CurrencyService, worker WorkerTrigger) *DomainsHandler {
+	return &DomainsHandler{Base: base, whois: whois, tech: tech, price: price, currency: currency, worker: worker}
 }
 
 type DomainRow struct {
@@ -44,6 +45,7 @@ type DomainsListData struct {
 	Registrars      []models.Registrar
 	DefaultCurrency string
 	TotalYearlyCost float64
+	TechInfoEnabled bool
 }
 
 func (h *DomainsHandler) List(w http.ResponseWriter, r *http.Request) {
@@ -161,6 +163,7 @@ func (h *DomainsHandler) List(w http.ResponseWriter, r *http.Request) {
 		Registrars:      registrars,
 		DefaultCurrency: targetCurrency,
 		TotalYearlyCost: total,
+		TechInfoEnabled: user.TechInfoEnabled,
 	})
 }
 
@@ -266,11 +269,12 @@ func (h *DomainsHandler) Show(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.render(w, r, "domains/detail.html", map[string]any{
-		"Domain":        domain,
-		"Price":         price,
-		"Registrars":    registrars,
-		"AvailableTags": availableTags,
-		"TagColors":     models.TagColors,
+		"Domain":          domain,
+		"Price":           price,
+		"Registrars":      registrars,
+		"AvailableTags":   availableTags,
+		"TagColors":       models.TagColors,
+		"TechInfoEnabled": user.TechInfoEnabled,
 	})
 }
 
@@ -286,6 +290,7 @@ func (h *DomainsHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 	domain.AutoRenewed = r.FormValue("auto_renewed") == "on"
 	domain.Wishlisted = r.FormValue("wishlisted") == "on"
+	domain.TechInfoEnabled = r.FormValue("tech_info_enabled") == "on"
 	domain.Registrar = nil
 	domain.RegistrarID = nil
 
@@ -304,7 +309,7 @@ func (h *DomainsHandler) Update(w http.ResponseWriter, r *http.Request) {
 		domain.ExpirationDate = nil
 	}
 
-	if err := h.db.Model(domain).Select("RegistrarID", "AutoRenewed", "Wishlisted", "ExpirationDate").Save(domain).Error; err != nil {
+	if err := h.db.Model(domain).Select("RegistrarID", "AutoRenewed", "Wishlisted", "ExpirationDate", "TechInfoEnabled").Save(domain).Error; err != nil {
 		h.flashError(w, r, "Failed to update domain")
 	} else {
 		h.flashSuccess(w, r, "Domain updated")
@@ -324,6 +329,22 @@ func (h *DomainsHandler) RefreshWhois(w http.ResponseWriter, r *http.Request) {
 	} else {
 		h.db.Save(domain)
 		h.flashSuccess(w, r, "WHOIS info refreshed")
+	}
+
+	http.Redirect(w, r, "/domains/"+mux.Vars(r)["id"], http.StatusSeeOther)
+}
+
+func (h *DomainsHandler) RefreshTech(w http.ResponseWriter, r *http.Request) {
+	domain, ok := h.loadDomain(w, r)
+	if !ok {
+		return
+	}
+
+	if err := h.tech.UpdateDomain(domain); err != nil {
+		h.flashError(w, r, "Tech info fetch failed: "+err.Error())
+	} else {
+		h.db.Save(domain)
+		h.flashSuccess(w, r, "Technical info refreshed")
 	}
 
 	http.Redirect(w, r, "/domains/"+mux.Vars(r)["id"], http.StatusSeeOther)

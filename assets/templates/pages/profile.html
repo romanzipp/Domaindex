@@ -24,6 +24,21 @@
         </form>
     </section>
 
+    <section class="card mb-6">
+        <h2 class="section-title mb-4">Features</h2>
+        <form method="POST" action="/profile" class="space-y-3">
+            <input type="hidden" name="username" value="{{.User.Username}}">
+            <input type="hidden" name="email" value="{{.User.Email}}">
+            <input type="hidden" name="default_currency" value="{{.User.DefaultCurrency}}">
+            <label class="flex items-center gap-2 text-sm">
+                <input type="checkbox" name="tech_info_enabled"{{if .User.TechInfoEnabled}} checked{{end}} class="rounded">
+                Enable technical info (DNS, ASN, SSL)
+            </label>
+            <p class="text-xs text-gray-400 dark:text-gray-500">Fetches A/AAAA records, ASN, country, and SSL certificate status for each domain in the background.</p>
+            <button type="submit" class="btn-primary px-4 py-1.5">Save</button>
+        </form>
+    </section>
+
     <section class="card">
         <h2 class="section-title mb-4">Change password</h2>
         <form method="POST" action="/profile/password" class="space-y-3">

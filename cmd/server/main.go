@@ -50,6 +50,7 @@ func main() {
 	base := handlers.NewBase(database, store, templateSub, cfg.RegistrationEnabled, version)
 
 	whoisSvc := services.NewWhoisService(database)
+	techSvc := services.NewTechService(database)
 	priceSvc := services.NewPriceService(database)
 	notifSvc := services.NewNotificationService(database, cfg.AppriseURL, cfg.AppriseKey)
 	currencySvc := services.NewCurrencyService()
@@ -58,10 +59,10 @@ func main() {
 	notificationsH := handlers.NewNotificationsHandler(base)
 	tagsH := handlers.NewTagsHandler(base)
 
-	worker := jobs.NewWorker(database, whoisSvc, notifSvc, cfg.WhoisRefreshInterval)
+	worker := jobs.NewWorker(database, whoisSvc, techSvc, notifSvc, cfg.WhoisRefreshInterval)
 	worker.Start()
 
-	domainsH := handlers.NewDomainsHandler(base, whoisSvc, priceSvc, currencySvc, worker)
+	domainsH := handlers.NewDomainsHandler(base, whoisSvc, techSvc, priceSvc, currencySvc, worker)
 
 	auth := middleware.NewAuthMiddleware(store, database)
 
@@ -92,6 +93,7 @@ func main() {
 	protected.HandleFunc("/domains/{id}", domainsH.Update).Methods("POST")
 	protected.HandleFunc("/domains/{id}/delete", domainsH.Delete).Methods("POST")
 	protected.HandleFunc("/domains/{id}/refresh", domainsH.RefreshWhois).Methods("POST")
+	protected.HandleFunc("/domains/{id}/refresh-tech", domainsH.RefreshTech).Methods("POST")
 	protected.HandleFunc("/domains/{id}/price", domainsH.SavePriceOverride).Methods("POST")
 	protected.HandleFunc("/domains/{id}/price/delete", domainsH.DeletePriceOverride).Methods("POST")
 	protected.HandleFunc("/domains/{id}/tags", tagsH.AttachTag).Methods("POST")

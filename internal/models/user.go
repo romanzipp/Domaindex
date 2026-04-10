@@ -8,6 +8,7 @@ type User struct {
 	Email           string    `gorm:"uniqueIndex;not null"`
 	PasswordHash    string    `gorm:"not null"`
 	DefaultCurrency string    `gorm:"default:'USD'"`
+	TechInfoEnabled bool      `gorm:"default:true"`
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 }

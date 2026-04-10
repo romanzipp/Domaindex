@@ -29,7 +29,7 @@
                     value="{{if .Data.Domain.ExpirationDate}}{{formatDate .Data.Domain.ExpirationDate}}{{end}}"
                     class="input w-48">
             </div>
-            <div class="flex gap-6">
+            <div class="flex gap-6 flex-wrap">
                 <label class="flex items-center gap-2 text-sm">
                     <input type="checkbox" name="auto_renewed"{{if .Data.Domain.AutoRenewed}} checked{{end}} class="rounded">
                     Auto-renewed
@@ -38,6 +38,12 @@
                     <input type="checkbox" name="wishlisted"{{if .Data.Domain.Wishlisted}} checked{{end}} class="rounded">
                     Wishlisted
                 </label>
+                {{if .Data.TechInfoEnabled}}
+                <label class="flex items-center gap-2 text-sm">
+                    <input type="checkbox" name="tech_info_enabled"{{if .Data.Domain.TechInfoEnabled}} checked{{end}} class="rounded">
+                    Technical info
+                </label>
+                {{end}}
             </div>
             <button type="submit" class="btn-primary px-4 py-1.5">Save</button>
         </form>
@@ -154,6 +160,65 @@
             <dd>{{formatDate .Data.Domain.WhoisFetchedAt}}</dd>
         </dl>
     </section>
+
+    {{/* Technical info */}}
+    {{if .Data.TechInfoEnabled}}
+    <section class="card mb-6">
+        <div class="flex items-center justify-between mb-3">
+            <h2 class="section-title">Technical info</h2>
+            <form method="POST" action="/domains/{{.Data.Domain.ID}}/refresh-tech">
+                <button type="submit" class="text-xs border border-gray-300 px-2 py-1 rounded hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700">Refresh</button>
+            </form>
+        </div>
+        <dl class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+            <dt class="text-gray-500 dark:text-gray-400">A records</dt>
+            <dd class="text-xs font-mono">
+                {{$a := .Data.Domain.TechAAddresses}}
+                {{if $a}}{{range $a}}{{.}}<br>{{end}}{{else}}<span class="text-gray-400 dark:text-gray-500">—</span>{{end}}
+            </dd>
+
+            <dt class="text-gray-500 dark:text-gray-400">AAAA records</dt>
+            <dd class="text-xs font-mono">
+                {{$aaaa := .Data.Domain.TechAAAAAddresses}}
+                {{if $aaaa}}{{range $aaaa}}{{.}}<br>{{end}}{{else}}<span class="text-gray-400 dark:text-gray-500">—</span>{{end}}
+            </dd>
+
+            <dt class="text-gray-500 dark:text-gray-400">ASN</dt>
+            <dd>{{if .Data.Domain.TechASN}}{{.Data.Domain.TechASN}}{{else}}<span class="text-gray-400 dark:text-gray-500">—</span>{{end}}</dd>
+
+            <dt class="text-gray-500 dark:text-gray-400">Organisation</dt>
+            <dd>{{if .Data.Domain.TechASNOrg}}{{.Data.Domain.TechASNOrg}}{{else}}<span class="text-gray-400 dark:text-gray-500">—</span>{{end}}</dd>
+
+            <dt class="text-gray-500 dark:text-gray-400">Country</dt>
+            <dd>{{if .Data.Domain.TechCountry}}{{.Data.Domain.TechCountry}}{{else}}<span class="text-gray-400 dark:text-gray-500">—</span>{{end}}</dd>
+
+            <dt class="text-gray-500 dark:text-gray-400">SSL</dt>
+            <dd>
+                {{if .Data.Domain.TechSSLEnabled}}
+                    <span class="text-green-600 dark:text-green-400">Yes</span>
+                {{else if .Data.Domain.TechFetchedAt}}
+                    <span class="text-red-600 dark:text-red-400">No</span>
+                {{else}}
+                    <span class="text-gray-400 dark:text-gray-500">—</span>
+                {{end}}
+            </dd>
+
+            <dt class="text-gray-500 dark:text-gray-400">Cert expires</dt>
+            <dd>
+                {{if .Data.Domain.TechSSLExpiry}}
+                    {{formatDate .Data.Domain.TechSSLExpiry}}
+                    <span class="text-gray-400 text-xs dark:text-gray-500">({{daysUntil .Data.Domain.TechSSLExpiry}})</span>
+                {{else}}<span class="text-gray-400 dark:text-gray-500">—</span>{{end}}
+            </dd>
+
+            <dt class="text-gray-500 dark:text-gray-400">Cert issuer</dt>
+            <dd>{{if .Data.Domain.TechSSLIssuer}}{{.Data.Domain.TechSSLIssuer}}{{else}}<span class="text-gray-400 dark:text-gray-500">—</span>{{end}}</dd>
+
+            <dt class="text-gray-500 dark:text-gray-400">Last fetched</dt>
+            <dd>{{formatDate .Data.Domain.TechFetchedAt}}</dd>
+        </dl>
+    </section>
+    {{end}}
 
     {{/* Price override */}}
     <section class="card">

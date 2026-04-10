@@ -22,6 +22,7 @@ func (b *Base) UpdateProfile(w http.ResponseWriter, r *http.Request) {
 	username := strings.TrimSpace(r.FormValue("username"))
 	email := strings.TrimSpace(r.FormValue("email"))
 	currency := strings.ToUpper(strings.TrimSpace(r.FormValue("default_currency")))
+	techInfoEnabled := r.FormValue("tech_info_enabled") == "on"
 
 	if username == "" || email == "" {
 		b.flashError(w, r, "Username and email are required")
@@ -35,6 +36,7 @@ func (b *Base) UpdateProfile(w http.ResponseWriter, r *http.Request) {
 	user.Username = username
 	user.Email = email
 	user.DefaultCurrency = currency
+	user.TechInfoEnabled = techInfoEnabled
 
 	if err := b.db.Save(user).Error; err != nil {
 		b.flashError(w, r, "Failed to update profile (username or email already taken)")
