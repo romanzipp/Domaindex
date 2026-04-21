@@ -86,6 +86,10 @@ See the [Makefile](/Makefile) for all available commands.
 
 - [Roman Zipp](https://romanzipp.com)
 
+## Attribution
+
+This project is in parts inspired by [DomainMOD](https://domainmod.org/).
+
 ## License
 
 MIT License
