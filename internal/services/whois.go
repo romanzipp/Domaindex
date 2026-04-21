@@ -88,10 +88,16 @@ func (s *WhoisService) UpdateDomain(domain *models.Domain) (changed bool, result
 		return false, nil, err
 	}
 
-	changed = domain.WhoisRaw != "" && domain.WhoisRaw != result.Raw
-
 	nsJSON, _ := json.Marshal(result.NameServers)
 	statusJSON, _ := json.Marshal(result.Statuses)
+
+	changed = domain.WhoisRaw != "" && (
+		!timeEqual(domain.ExpirationDate, result.ExpirationDate) ||
+		!timeEqual(domain.UpdatedDate, result.UpdatedDate) ||
+		!timeEqual(domain.CreatedDate, result.CreatedDate) ||
+		domain.NameServersRaw != string(nsJSON) ||
+		domain.DomainStatus != string(statusJSON) ||
+		domain.DNSSec != result.DNSSec)
 
 	now := time.Now()
 	domain.WhoisRaw = result.Raw
@@ -112,6 +118,16 @@ func (s *WhoisService) UpdateDomain(domain *models.Domain) (changed bool, result
 	}
 
 	return changed, result, nil
+}
+
+func timeEqual(a, b *time.Time) bool {
+	if a == nil && b == nil {
+		return true
+	}
+	if a == nil || b == nil {
+		return false
+	}
+	return a.Equal(*b)
 }
 
 func ExtractTLD(domainName string) string {
