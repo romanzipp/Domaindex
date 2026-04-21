@@ -23,6 +23,7 @@ Self-hosted domain manager, all of your countless domains (*sure, you will finis
 - [x] Domain A/AAAA host information (ASN, country, ...)
 - [x] CSS darkmode
 - [x] Cache CSS assets, cache-bust with current version
+- [ ] [Suggestions?](https://github.com/romanzipp/Domaindex/issues)
 
 ## Deployment
 
