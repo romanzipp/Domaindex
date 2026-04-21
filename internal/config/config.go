@@ -17,6 +17,7 @@ type Config struct {
 
 	AppriseURL string
 	AppriseKey string
+	AppriseTag string
 
 	WhoisRefreshInterval time.Duration
 }
@@ -40,6 +41,7 @@ func Load() *Config {
 
 		AppriseURL: os.Getenv("APPRISE_URL"),
 		AppriseKey: os.Getenv("APPRISE_KEY"),
+		AppriseTag: os.Getenv("APPRISE_TAG"),
 
 		WhoisRefreshInterval: whoisInterval,
 	}

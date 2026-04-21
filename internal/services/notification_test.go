@@ -24,7 +24,7 @@ func setupNotifDB(t *testing.T) *gorm.DB {
 
 func TestNotification_NoDuplicatePerDay(t *testing.T) {
 	db := setupNotifDB(t)
-	svc := services.NewNotificationService(db, "", "")
+	svc := services.NewNotificationService(db, "", "", "")
 
 	user := models.User{Username: "notiftest", Email: "n@test.com", PasswordHash: "x"}
 	db.Create(&user)
@@ -50,7 +50,7 @@ func TestNotification_NoDuplicatePerDay(t *testing.T) {
 
 func TestNotification_DifferentTypesAllowed(t *testing.T) {
 	db := setupNotifDB(t)
-	svc := services.NewNotificationService(db, "", "")
+	svc := services.NewNotificationService(db, "", "", "")
 
 	user := models.User{Username: "notiftest2", Email: "n2@test.com", PasswordHash: "x"}
 	db.Create(&user)

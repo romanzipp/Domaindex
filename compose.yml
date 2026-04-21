@@ -13,6 +13,7 @@ services:
       REGISTRATION_ENABLED: "true"
       # APPRISE_URL: http://apprise:8000
       # APPRISE_KEY: ""
+      # APPRISE_TAG: all
     restart: unless-stopped
 
   # Optional: Apprise notification gateway

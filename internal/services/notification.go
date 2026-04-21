@@ -15,10 +15,11 @@ type NotificationService struct {
 	db         *gorm.DB
 	appriseURL string
 	appriseKey string
+	appriseTag string
 }
 
-func NewNotificationService(db *gorm.DB, appriseURL, appriseKey string) *NotificationService {
-	return &NotificationService{db: db, appriseURL: appriseURL, appriseKey: appriseKey}
+func NewNotificationService(db *gorm.DB, appriseURL, appriseKey, appriseTag string) *NotificationService {
+	return &NotificationService{db: db, appriseURL: appriseURL, appriseKey: appriseKey, appriseTag: appriseTag}
 }
 
 func (s *NotificationService) Send(userID, domainID uint, notifType, message string) error {
@@ -61,6 +62,9 @@ func (s *NotificationService) sendToApprise(message string) error {
 		"title": "Domain Manager",
 		"body":  message,
 		"type":  "info",
+	}
+	if s.appriseTag != "" {
+		payload["tag"] = s.appriseTag
 	}
 
 	body, _ := json.Marshal(payload)

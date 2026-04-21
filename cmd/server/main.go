@@ -52,7 +52,7 @@ func main() {
 	whoisSvc := services.NewWhoisService(database)
 	techSvc := services.NewTechService(database)
 	priceSvc := services.NewPriceService(database)
-	notifSvc := services.NewNotificationService(database, cfg.AppriseURL, cfg.AppriseKey)
+	notifSvc := services.NewNotificationService(database, cfg.AppriseURL, cfg.AppriseKey, cfg.AppriseTag)
 	currencySvc := services.NewCurrencyService()
 
 	registrarsH := handlers.NewRegistrarsHandler(base)

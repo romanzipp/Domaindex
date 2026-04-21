@@ -62,7 +62,8 @@ docker run -d \
 ### Apprise (Notifications)
 
 - `APPRISE_URL` - Apprise gateway URL
-- `APPRISE_KEY` - Apprise key
+- `APPRISE_KEY` - Apprise configuration key
+- `APPRISE_TAG` - Apprise tag to target specific notification services (e.g. `all`)
 
 ## Details
 
