@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -38,14 +39,18 @@ func (s *NotificationService) Send(userID, domainID uint, notifType, message str
 		return err
 	}
 
+	now := time.Now()
+	if err := s.db.Model(n).Update("sent_at", &now).Error; err != nil {
+		return err
+	}
+
 	if s.appriseURL != "" {
 		if err := s.sendToApprise(message); err != nil {
-			return err
+			log.Printf("apprise send failed: %v", err)
 		}
 	}
 
-	now := time.Now()
-	return s.db.Model(n).Update("sent_at", &now).Error
+	return nil
 }
 
 func (s *NotificationService) alreadySent(domainID uint, notifType string) bool {
