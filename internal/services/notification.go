@@ -24,7 +24,7 @@ func NewNotificationService(db *gorm.DB, appriseURL, appriseKey, appriseTag stri
 }
 
 func (s *NotificationService) Send(userID, domainID uint, notifType, message string) error {
-	if s.alreadySent(domainID, notifType) {
+	if notifType != models.NotificationTypeTest && s.alreadySent(domainID, notifType) {
 		return nil
 	}
 
