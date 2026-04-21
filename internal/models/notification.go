@@ -7,6 +7,7 @@ const (
 	NotificationTypeExpiry30d       = "expiry_30d"
 	NotificationTypeExpiry24h       = "expiry_24h"
 	NotificationTypeWhoisChanged    = "whois_changed"
+	NotificationTypeTest            = "test"
 )
 
 type Notification struct {

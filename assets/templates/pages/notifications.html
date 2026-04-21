@@ -2,6 +2,9 @@
 {{define "content"}}
 <div class="flex items-center justify-between mb-6">
     <h1 class="page-title">Notifications</h1>
+    <form method="POST" action="/notifications/test">
+        <button type="submit" class="btn-primary px-3 py-1.5">Test notification</button>
+    </form>
 </div>
 
 {{if .Data}}

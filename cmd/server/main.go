@@ -56,7 +56,7 @@ func main() {
 	currencySvc := services.NewCurrencyService()
 
 	registrarsH := handlers.NewRegistrarsHandler(base)
-	notificationsH := handlers.NewNotificationsHandler(base)
+	notificationsH := handlers.NewNotificationsHandler(base, notifSvc)
 	tagsH := handlers.NewTagsHandler(base)
 
 	worker := jobs.NewWorker(database, whoisSvc, techSvc, notifSvc, cfg.WhoisRefreshInterval)
@@ -110,6 +110,7 @@ func main() {
 	protected.HandleFunc("/registrars/{id}/prices/{price_id}/delete", registrarsH.DeletePrice).Methods("POST")
 
 	protected.HandleFunc("/notifications", notificationsH.List).Methods("GET")
+	protected.HandleFunc("/notifications/test", notificationsH.SendTest).Methods("POST")
 
 	protected.HandleFunc("/profile", base.ShowProfile).Methods("GET")
 	protected.HandleFunc("/profile", base.UpdateProfile).Methods("POST")
