@@ -251,6 +251,9 @@
                     {{if $aaaa}}{{range $aaaa}}{{.}}<br>{{end}}{{else}}<span class="text-gray-400 dark:text-gray-500">—</span>{{end}}
                 </dd>
 
+                <dt class="text-gray-500 dark:text-gray-400">DNS provider</dt>
+                <dd>{{if .Data.Domain.TechDNSProvider}}{{.Data.Domain.TechDNSProvider}}{{else}}<span class="text-gray-400 dark:text-gray-500">—</span>{{end}}</dd>
+
                 <dt class="text-gray-500 dark:text-gray-400">ASN</dt>
                 <dd>{{if .Data.Domain.TechASN}}{{.Data.Domain.TechASN}}{{else}}<span class="text-gray-400 dark:text-gray-500">—</span>{{end}}</dd>
 

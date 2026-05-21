@@ -7,6 +7,7 @@ import (
 	"io"
 	"net"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/romanzipp/domaindex/internal/models"
@@ -47,8 +48,86 @@ func (s *TechService) UpdateDomain(d *models.Domain) error {
 	d.TechSSLExpiry = sslExpiry
 	d.TechSSLIssuer = sslIssuer
 
+	d.TechDNSProvider = s.fetchDNSProvider(d.Name)
+
 	d.TechFetchedAt = &now
 	return nil
+}
+
+func (s *TechService) fetchDNSProvider(domain string) string {
+	servers, err := net.LookupNS(domain)
+	if err != nil || len(servers) == 0 {
+		return ""
+	}
+	hosts := make([]string, 0, len(servers))
+	for _, ns := range servers {
+		hosts = append(hosts, strings.ToLower(strings.TrimSuffix(ns.Host, ".")))
+	}
+	return detectDNSProvider(hosts)
+}
+
+// detectDNSProvider maps nameserver hostnames to a human-readable provider name.
+// Returns the base domain of the first nameserver as fallback.
+func detectDNSProvider(nameservers []string) string {
+	if len(nameservers) == 0 {
+		return ""
+	}
+	for _, ns := range nameservers {
+		for _, p := range dnsProviderPatterns {
+			if strings.Contains(ns, p.match) {
+				return p.name
+			}
+		}
+	}
+	return baseDomain(nameservers[0])
+}
+
+var dnsProviderPatterns = []struct {
+	match string
+	name  string
+}{
+	{"cloudflare.com", "Cloudflare"},
+	{"awsdns", "AWS Route 53"},
+	{"azure-dns", "Azure DNS"},
+	{"googledomains.com", "Google Cloud DNS"},
+	{"google.com", "Google Cloud DNS"},
+	{"domaincontrol.com", "GoDaddy"},
+	{"registrar-servers.com", "Namecheap"},
+	{"namecheaphosting.com", "Namecheap"},
+	{"hetzner.com", "Hetzner"},
+	{"hetzner.de", "Hetzner"},
+	{"first-ns.de", "Hetzner"},
+	{"digitalocean.com", "DigitalOcean"},
+	{"dnsimple.com", "DNSimple"},
+	{"nsone.net", "NS1"},
+	{"vercel-dns.com", "Vercel"},
+	{"netlify.com", "Netlify"},
+	{"gandi.net", "Gandi"},
+	{"ovh.net", "OVH"},
+	{"porkbun.com", "Porkbun"},
+	{"he.net", "Hurricane Electric"},
+	{"name.com", "Name.com"},
+	{"dynadot.com", "Dynadot"},
+	{"namesilo.com", "NameSilo"},
+	{"spaceship.com", "Spaceship"},
+	{"sav.com", "Sav"},
+	{"linode.com", "Linode"},
+	{"akamai", "Akamai"},
+	{"fastly.net", "Fastly"},
+	{"easydns.com", "easyDNS"},
+	{"hover.com", "Hover"},
+	{"rackspace.com", "Rackspace"},
+	{"alibabadns.com", "Alibaba Cloud DNS"},
+	{"dnspod.net", "DNSPod"},
+	{"yandex.net", "Yandex"},
+}
+
+func baseDomain(host string) string {
+	parts := strings.Split(host, ".")
+	if len(parts) < 2 {
+		return host
+	}
+	return strings.Join(parts[len(parts)-2:], ".")
 }
 
 func (s *TechService) fetchDNS(domain string) (aRecords, aaaaRecords []string, err error) {

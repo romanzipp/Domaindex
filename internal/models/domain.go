@@ -34,6 +34,7 @@ type Domain struct {
 	TechSSLEnabled  bool       `gorm:"column:tech_ssl_enabled"`
 	TechSSLExpiry   *time.Time `gorm:"column:tech_ssl_expiry"`
 	TechSSLIssuer   string     `gorm:"column:tech_ssl_issuer"`
+	TechDNSProvider string     `gorm:"column:tech_dns_provider"`
 	TechFetchedAt   *time.Time `gorm:"column:tech_fetched_at"`
 
 	Tags           []Tag          `gorm:"many2many:domain_tags;"`
