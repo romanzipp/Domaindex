@@ -64,9 +64,10 @@ func (s *NotificationService) alreadySent(domainID uint, notifType string) bool 
 
 func (s *NotificationService) sendToApprise(message string) error {
 	payload := map[string]string{
-		"title": "Domain Manager",
-		"body":  message,
-		"type":  "info",
+		"title":  "Domain Manager",
+		"body":   message,
+		"type":   "info",
+		"format": "markdown",
 	}
 	if s.appriseTag != "" {
 		payload["tag"] = s.appriseTag

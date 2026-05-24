@@ -3,6 +3,7 @@ package jobs
 import (
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/romanzipp/domaindex/internal/models"
@@ -104,7 +105,7 @@ func (w *Worker) refreshWhois() error {
 
 	for i := range domains {
 		d := &domains[i]
-		changed, result, err := w.whois.UpdateDomain(d)
+		changes, result, err := w.whois.UpdateDomain(d)
 		if err != nil {
 			log.Printf("whois fetch failed for %s: %v", d.Name, err)
 			continue
@@ -116,9 +117,13 @@ func (w *Worker) refreshWhois() error {
 			log.Printf("save domain %s: %v", d.Name, err)
 			continue
 		}
-		if changed {
-			msg := fmt.Sprintf("WHOIS data changed for %s", d.Name)
-			if err := w.notification.Send(d.UserID, d.ID, models.NotificationTypeWhoisChanged, msg); err != nil {
+		if len(changes) > 0 {
+			var b strings.Builder
+			fmt.Fprintf(&b, "**WHOIS data changed for `%s`**\n", d.Name)
+			for _, c := range changes {
+				fmt.Fprintf(&b, "- %s\n", c)
+			}
+			if err := w.notification.Send(d.UserID, d.ID, models.NotificationTypeWhoisChanged, b.String()); err != nil {
 				log.Printf("send notification for %s: %v", d.Name, err)
 			}
 		}

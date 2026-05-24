@@ -2,6 +2,7 @@ package services
 
 import (
 	"encoding/json"
+	"fmt"
 	"strings"
 	"time"
 
@@ -82,22 +83,35 @@ func (s *WhoisService) ResolveRegistrar(result *WhoisResult, userID uint) *uint 
 	return &reg.ID
 }
 
-func (s *WhoisService) UpdateDomain(domain *models.Domain) (changed bool, result *WhoisResult, err error) {
+func (s *WhoisService) UpdateDomain(domain *models.Domain) (changes []string, result *WhoisResult, err error) {
 	result, err = s.Fetch(domain.Name)
 	if err != nil {
-		return false, nil, err
+		return nil, nil, err
 	}
 
 	nsJSON, _ := json.Marshal(result.NameServers)
 	statusJSON, _ := json.Marshal(result.Statuses)
 
-	changed = domain.WhoisRaw != "" && (
-		!timeEqual(domain.ExpirationDate, result.ExpirationDate) ||
-		!timeEqual(domain.UpdatedDate, result.UpdatedDate) ||
-		!timeEqual(domain.CreatedDate, result.CreatedDate) ||
-		domain.NameServersRaw != string(nsJSON) ||
-		domain.DomainStatus != string(statusJSON) ||
-		domain.DNSSec != result.DNSSec)
+	if domain.WhoisRaw != "" {
+		if !timeEqual(domain.ExpirationDate, result.ExpirationDate) {
+			changes = append(changes, fmt.Sprintf("**Expiration date:** `%s` → `%s`", formatDate(domain.ExpirationDate), formatDate(result.ExpirationDate)))
+		}
+		if !timeEqual(domain.UpdatedDate, result.UpdatedDate) {
+			changes = append(changes, fmt.Sprintf("**Updated date:** `%s` → `%s`", formatDate(domain.UpdatedDate), formatDate(result.UpdatedDate)))
+		}
+		if !timeEqual(domain.CreatedDate, result.CreatedDate) {
+			changes = append(changes, fmt.Sprintf("**Created date:** `%s` → `%s`", formatDate(domain.CreatedDate), formatDate(result.CreatedDate)))
+		}
+		if domain.NameServersRaw != string(nsJSON) {
+			changes = append(changes, fmt.Sprintf("**Name servers:** `%s` → `%s`", formatStringList(domain.NameServersRaw), formatStrings(result.NameServers)))
+		}
+		if domain.DomainStatus != string(statusJSON) {
+			changes = append(changes, fmt.Sprintf("**Status:** `%s` → `%s`", formatStringList(domain.DomainStatus), formatStrings(result.Statuses)))
+		}
+		if domain.DNSSec != result.DNSSec {
+			changes = append(changes, fmt.Sprintf("**DNSSEC:** `%t` → `%t`", domain.DNSSec, result.DNSSec))
+		}
+	}
 
 	now := time.Now()
 	domain.WhoisRaw = result.Raw
@@ -117,7 +131,32 @@ func (s *WhoisService) UpdateDomain(domain *models.Domain) (changed bool, result
 			Update("iana_id", result.RegistrarIanaID)
 	}
 
-	return changed, result, nil
+	return changes, result, nil
+}
+
+func formatDate(t *time.Time) string {
+	if t == nil {
+		return "none"
+	}
+	return t.Format("2006-01-02")
+}
+
+func formatStrings(values []string) string {
+	if len(values) == 0 {
+		return "none"
+	}
+	return strings.Join(values, ", ")
+}
+
+func formatStringList(raw string) string {
+	if raw == "" {
+		return "none"
+	}
+	var values []string
+	if err := json.Unmarshal([]byte(raw), &values); err != nil {
+		return raw
+	}
+	return formatStrings(values)
 }
 
 func timeEqual(a, b *time.Time) bool {

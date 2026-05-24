@@ -61,3 +61,9 @@
 .tag-indigo { @apply bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300; }
 .tag-purple { @apply bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300; }
 .tag-pink   { @apply bg-pink-100 text-pink-700 dark:bg-pink-900/50 dark:text-pink-300; }
+
+.notification-message ul { @apply list-disc pl-5 my-1; }
+.notification-message li { @apply my-0.5; }
+.notification-message code { @apply text-xs bg-gray-100 dark:bg-gray-700 px-1 py-0.5 rounded font-mono; }
+.notification-message strong { @apply font-semibold text-gray-700 dark:text-gray-300; }
+.notification-message p { @apply my-1; }

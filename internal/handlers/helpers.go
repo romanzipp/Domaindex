@@ -1,13 +1,23 @@
 package handlers
 
 import (
+	"bytes"
 	"fmt"
 	"html/template"
 	"strings"
 	"time"
 
 	"github.com/romanzipp/domaindex/internal/services"
+	"github.com/yuin/goldmark"
 )
+
+func renderMarkdown(s string) template.HTML {
+	var buf bytes.Buffer
+	if err := goldmark.Convert([]byte(s), &buf); err != nil {
+		return template.HTML(template.HTMLEscapeString(s))
+	}
+	return template.HTML(buf.String())
+}
 
 func templateFuncs() template.FuncMap {
 	return template.FuncMap{
@@ -42,6 +52,7 @@ func templateFuncs() template.FuncMap {
 		},
 		"currencySymbol": services.Symbol,
 		"formatAmount":   services.FormatAmount,
+		"markdown":       renderMarkdown,
 		"add":            func(a, b int) int { return a + b },
 		"derefUint": func(p *uint) uint {
 			if p == nil {
