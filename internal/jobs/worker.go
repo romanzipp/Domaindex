@@ -148,6 +148,9 @@ func (w *Worker) checkExpiries() error {
 		if days == nil {
 			continue
 		}
+		if *days < 0 {
+			continue
+		}
 
 		if d.Wishlisted {
 			w.checkWishlistExpiry(d, *days)
