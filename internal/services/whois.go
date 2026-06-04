@@ -91,39 +91,43 @@ func (s *WhoisService) UpdateDomain(domain *models.Domain) (changes []string, re
 
 	nsJSON, _ := json.Marshal(result.NameServers)
 	statusJSON, _ := json.Marshal(result.Statuses)
+	isFirstFetch := domain.WhoisRaw == ""
 
-	if domain.WhoisRaw != "" {
-		if !timeEqual(domain.ExpirationDate, result.ExpirationDate) {
-			changes = append(changes, fmt.Sprintf("**Expiration date:** `%s` → `%s`", formatDate(domain.ExpirationDate), formatDate(result.ExpirationDate)))
+	recordChange := func(format string, args ...any) {
+		if isFirstFetch {
+			return
 		}
-		if !timeEqual(domain.UpdatedDate, result.UpdatedDate) {
-			changes = append(changes, fmt.Sprintf("**Updated date:** `%s` → `%s`", formatDate(domain.UpdatedDate), formatDate(result.UpdatedDate)))
-		}
-		if !timeEqual(domain.CreatedDate, result.CreatedDate) {
-			changes = append(changes, fmt.Sprintf("**Created date:** `%s` → `%s`", formatDate(domain.CreatedDate), formatDate(result.CreatedDate)))
-		}
-		if domain.NameServersRaw != string(nsJSON) {
-			changes = append(changes, fmt.Sprintf("**Name servers:** `%s` → `%s`", formatStringList(domain.NameServersRaw), formatStrings(result.NameServers)))
-		}
-		if domain.DomainStatus != string(statusJSON) {
-			changes = append(changes, fmt.Sprintf("**Status:** `%s` → `%s`", formatStringList(domain.DomainStatus), formatStrings(result.Statuses)))
-		}
-		if domain.DNSSec != result.DNSSec {
-			changes = append(changes, fmt.Sprintf("**DNSSEC:** `%t` → `%t`", domain.DNSSec, result.DNSSec))
-		}
+		changes = append(changes, fmt.Sprintf(format, args...))
+	}
+
+	if result.ExpirationDate != nil && !timeEqual(domain.ExpirationDate, result.ExpirationDate) {
+		recordChange("**Expiration date:** `%s` → `%s`", formatDate(domain.ExpirationDate), formatDate(result.ExpirationDate))
+		domain.ExpirationDate = result.ExpirationDate
+	}
+	if result.UpdatedDate != nil && !timeEqual(domain.UpdatedDate, result.UpdatedDate) {
+		recordChange("**Updated date:** `%s` → `%s`", formatDate(domain.UpdatedDate), formatDate(result.UpdatedDate))
+		domain.UpdatedDate = result.UpdatedDate
+	}
+	if result.CreatedDate != nil && !timeEqual(domain.CreatedDate, result.CreatedDate) {
+		recordChange("**Created date:** `%s` → `%s`", formatDate(domain.CreatedDate), formatDate(result.CreatedDate))
+		domain.CreatedDate = result.CreatedDate
+	}
+	if len(result.NameServers) > 0 && domain.NameServersRaw != string(nsJSON) {
+		recordChange("**Name servers:** `%s` → `%s`", formatStringList(domain.NameServersRaw), formatStrings(result.NameServers))
+		domain.NameServersRaw = string(nsJSON)
+	}
+	if len(result.Statuses) > 0 && domain.DomainStatus != string(statusJSON) {
+		recordChange("**Status:** `%s` → `%s`", formatStringList(domain.DomainStatus), formatStrings(result.Statuses))
+		domain.DomainStatus = string(statusJSON)
+	}
+	if domain.DNSSec != result.DNSSec {
+		recordChange("**DNSSEC:** `%t` → `%t`", domain.DNSSec, result.DNSSec)
+		domain.DNSSec = result.DNSSec
 	}
 
 	now := time.Now()
 	domain.WhoisRaw = result.Raw
 	domain.WhoisFetchedAt = &now
-	domain.CreatedDate = result.CreatedDate
-	domain.UpdatedDate = result.UpdatedDate
-	if result.ExpirationDate != nil {
-		domain.ExpirationDate = result.ExpirationDate
-	}
-	domain.NameServersRaw = string(nsJSON)
-	domain.DomainStatus = string(statusJSON)
-	domain.DNSSec = result.DNSSec
 
 	if result.RegistrarIanaID != "" && domain.RegistrarID != nil {
 		s.db.Model(&models.Registrar{}).
