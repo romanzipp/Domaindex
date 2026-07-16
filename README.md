@@ -5,6 +5,9 @@ Self-hosted domain manager, all of your countless domains (*sure, you will finis
 ![Domaindex](art/01-light.png#gh-light-mode-only)
 ![Domaindex](art/01-dark.png#gh-dark-mode-only)
 
+> [!NOTE]
+> This project is primarily developed on [Codeberg](https://codeberg.org/romanzipp/domainindex) and only mirrored to GitHub. Please open issues and pull requests on Codeberg.
+
 ## Features
 
 - Add domains, bulk import from list
