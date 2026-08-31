@@ -1,26 +1,34 @@
 package services
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
 	"log"
-	"net/http"
 	"time"
 
+	"github.com/containrrr/shoutrrr"
+	"github.com/containrrr/shoutrrr/pkg/router"
+	"github.com/containrrr/shoutrrr/pkg/types"
 	"github.com/romanzipp/domaindex/internal/models"
 	"gorm.io/gorm"
 )
 
 type NotificationService struct {
-	db         *gorm.DB
-	appriseURL string
-	appriseKey string
-	appriseTag string
+	db     *gorm.DB
+	sender *router.ServiceRouter
 }
 
-func NewNotificationService(db *gorm.DB, appriseURL, appriseKey, appriseTag string) *NotificationService {
-	return &NotificationService{db: db, appriseURL: appriseURL, appriseKey: appriseKey, appriseTag: appriseTag}
+func NewNotificationService(db *gorm.DB, urls []string) *NotificationService {
+	s := &NotificationService{db: db}
+
+	if len(urls) > 0 {
+		sender, err := shoutrrr.CreateSender(urls...)
+		if err != nil {
+			log.Printf("notification urls invalid: %v", err)
+		} else {
+			s.sender = sender
+		}
+	}
+
+	return s
 }
 
 func (s *NotificationService) Send(userID, domainID uint, notifType, message string) error {
@@ -44,11 +52,7 @@ func (s *NotificationService) Send(userID, domainID uint, notifType, message str
 		return err
 	}
 
-	if s.appriseURL != "" {
-		if err := s.sendToApprise(message); err != nil {
-			log.Printf("apprise send failed: %v", err)
-		}
-	}
+	s.notify(message)
 
 	return nil
 }
@@ -62,33 +66,14 @@ func (s *NotificationService) alreadySent(domainID uint, notifType string) bool 
 	return count > 0
 }
 
-func (s *NotificationService) sendToApprise(message string) error {
-	payload := map[string]string{
-		"title":  "Domain Manager",
-		"body":   message,
-		"type":   "info",
-		"format": "markdown",
-	}
-	if s.appriseTag != "" {
-		payload["tag"] = s.appriseTag
+func (s *NotificationService) notify(message string) {
+	if s.sender == nil {
+		return
 	}
 
-	body, _ := json.Marshal(payload)
-
-	url := s.appriseURL + "/notify/"
-	if s.appriseKey != "" {
-		url = s.appriseURL + "/notify/" + s.appriseKey
+	for _, err := range s.sender.Send(message, &types.Params{"title": "Domaindex"}) {
+		if err != nil {
+			log.Printf("notification send failed: %v", err)
+		}
 	}
-
-	resp, err := http.Post(url, "application/json", bytes.NewReader(body))
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode >= 300 {
-		return fmt.Errorf("apprise returned status %d", resp.StatusCode)
-	}
-
-	return nil
 }

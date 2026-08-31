@@ -3,21 +3,20 @@ package config
 import (
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
 type Config struct {
-	AppHost              string
-	AppPort              string
-	AppSecret            string
-	RegistrationEnabled  bool
+	AppHost             string
+	AppPort             string
+	AppSecret           string
+	RegistrationEnabled bool
 
 	DBDriver string
 	DBDSN    string
 
-	AppriseURL string
-	AppriseKey string
-	AppriseTag string
+	NotificationURLs []string
 
 	WhoisRefreshInterval time.Duration
 }
@@ -39,9 +38,7 @@ func Load() *Config {
 		DBDriver: getEnv("DB_DRIVER", "sqlite"),
 		DBDSN:    getEnv("DB_DSN", "data/domaindex.db"),
 
-		AppriseURL: os.Getenv("APPRISE_URL"),
-		AppriseKey: os.Getenv("APPRISE_KEY"),
-		AppriseTag: os.Getenv("APPRISE_TAG"),
+		NotificationURLs: getEnvList("NOTIFICATION_URLS"),
 
 		WhoisRefreshInterval: whoisInterval,
 	}
@@ -64,4 +61,16 @@ func getEnvBool(key string, fallback bool) bool {
 		return fallback
 	}
 	return b
+}
+
+func getEnvList(key string) []string {
+	var out []string
+
+	for _, v := range strings.Split(os.Getenv(key), ",") {
+		if v = strings.TrimSpace(v); v != "" {
+			out = append(out, v)
+		}
+	}
+
+	return out
 }

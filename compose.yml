@@ -11,16 +11,6 @@ services:
       DB_DSN: data/domaindex.db
       WHOIS_REFRESH_INTERVAL: 6h
       REGISTRATION_ENABLED: "true"
-      # APPRISE_URL: http://apprise:8000
-      # APPRISE_KEY: ""
-      # APPRISE_TAG: all
+      # NOTIFICATION_URLS: pushover://shoutrrr:apiToken@userKey/
     restart: unless-stopped
 
-  # Optional: Apprise notification gateway
-  # apprise:
-  #   image: caronc/apprise:latest
-  #   ports:
-  #     - "8001:8000"
-  #   volumes:
-  #     - ./apprise-config:/config
-  #   restart: unless-stopped

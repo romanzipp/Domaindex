@@ -13,7 +13,7 @@ Self-hosted domain manager, all of your countless domains (*sure, you will finis
 - Add domains, bulk import from list
 - Automatically fetches WHOIS information, incl. expiry date and registrar information
 - Wishlist domains
-- Get notified about soon to expire domains ([Apprise](https://github.com/caronc/apprise) integration)
+- Get notified about soon to expire domains (Pushover, Discord, Slack, Telegram, Gotify, ntfy, e-mail, … via [Shoutrrr](https://containrrr.dev/shoutrrr/v0.8/))
 - Built-in list of most popular registrars + prices for TLDs
 - Flexible price-management, set per registrar prices, custom overrides, prices initial costs, yearly renewals, transfers, privacy add-ons etc.
 - Multi-user application
@@ -63,11 +63,14 @@ docker run -d \
 - `DB_DRIVER` - `postgres`
 - `DB_DSN` - Connection string (default: `host=db user=domaindex password=secret dbname=domaindex port=5432 sslmode=disable`)
 
-### Apprise (Notifications)
+### Notifications
 
-- `APPRISE_URL` - Apprise gateway URL
-- `APPRISE_KEY` - Apprise configuration key
-- `APPRISE_TAG` - Apprise tag to target specific notification services (e.g. `all`)
+- `NOTIFICATION_URLS` - Comma-separated list of [Shoutrrr](https://containrrr.dev/shoutrrr/v0.8/services/overview/) service URLs. Leave empty to only keep notifications in the app.
+
+```
+NOTIFICATION_URLS=pushover://shoutrrr:apiToken@userKey/,discord://token@id
+```
+
 
 ## Details
 
